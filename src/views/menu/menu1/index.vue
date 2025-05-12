@@ -1,0 +1,13 @@
+<template>
+  <a-card ly-h-full>
+    <div ly-flex ly-flex-col ly-items-center>
+      <span class="ly-text-size-[23px] ly-font-bold" ly-m="[20px_0px_30px]">我是menu1 🍇🍇🍇🍓🍓🍓</span>
+    </div>
+  </a-card>
+</template>
+
+<script setup lang="ts" name="menu1">
+</script>
+
+<style scoped lang="less">
+</style>

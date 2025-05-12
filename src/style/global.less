@@ -1,0 +1,49 @@
+@import './variables.less';
+
+::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track-piece {
+  border: none;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  width: 6px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+@color-primary: #519be0;
+
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all 0.2s;
+}
+
+.fade-transform-enter-from {
+  opacity: 0;
+  transition: all 0.2s;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transition: all 0.2s;
+  transform: translateX(30px);
+}
