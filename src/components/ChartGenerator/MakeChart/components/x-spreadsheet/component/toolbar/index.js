@@ -54,7 +54,6 @@ function initBtns2() {
 function moreResize() {
   const { el, btns, moreEl, btns2 } = this
   const { moreBtns, contentEl } = moreEl.dd
-  // debugger
   // TODO:工具栏宽度
   // el.css('width', `${this.widthFn()}px`);
   const elBox = el.box()

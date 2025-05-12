@@ -118,7 +118,6 @@ const getCharDataApi = async (options: any) => {
 // 根据比例设置echarts图形宽高,目前是4:3
 const setContainerHeight = () => {
   const width = document.getElementById(props.options.id)!.offsetWidth
-  // debugger
   const height = (3 * width) / 4
   return { width: width + 'px', height: height + 'px' }
 }

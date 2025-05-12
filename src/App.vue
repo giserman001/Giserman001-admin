@@ -21,7 +21,7 @@
 import zh_CN from 'ant-design-vue/es/locale/zh_CN'
 import en_US from 'ant-design-vue/es/locale/en_US'
 import LockScreen from '@/layouts/components/LockScreen/index.vue'
-import emitter from '@/utils/eventBus'
+// import emitter from '@/utils/eventBus'
 import { Modal } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
 // import { StyleProvider } from 'ant-design-vue';
@@ -34,15 +34,9 @@ const { locale } = useI18n()
 const lang = { 'en-US': en_US, 'zh-CN': zh_CN }
 
 
-const router = useRouter()
-emitter.once('axios_goto_login', () => {
-  router.push({ name: 'login' })
-})
-
 //全局错误处理
 onErrorCaptured((err, instance, info) => {
   if (window.env !== 'localhost') {
-    // debugger
     console.log(err, instance, info)
     Modal.error({
       title: 'System Error',

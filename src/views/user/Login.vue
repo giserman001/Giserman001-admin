@@ -1,8 +1,5 @@
 <template>
   <div ly-w-full ly-h-full ly-flex="~ col" ly-gap="[40px]" class="main">
-    <div ly-flex ly-justify-end ly-px="[40px]" ly-py="[15px]">
-      <Language />
-    </div>
     <div ly-flex="~ col" ly-items-center ly-gap="[40px]">
       <div ly-flex="~ col" ly-gap="[12px]">
         <div ly-flex ly-items-center ly-gap="[16px]">
@@ -104,7 +101,6 @@ import { HOME_URL } from "@/config"
 import { initDynamicRouter } from "@/router/modules/dynamicRouter"
 import { notification } from 'ant-design-vue';
 import { getTimeState } from '@/utils'
-import Language from '@/layouts/components/header/components/Language.vue'
 import { message } from 'ant-design-vue'
 
 interface FormState {

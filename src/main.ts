@@ -4,8 +4,6 @@ import router from '@/router'
 
 import directives from "@/directives/index";
 
-import i18n from '@/locales/useI18n'
-
 import 'virtual:svg-icons-register'
 
 import pinia from '@/store'
@@ -25,8 +23,6 @@ app.use(directives)
 app.use(router)
 
 app.use(pinia)
-
-app.use(i18n)
 
 app.mount('#app')
 

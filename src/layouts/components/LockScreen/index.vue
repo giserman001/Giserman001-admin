@@ -61,7 +61,6 @@ import 'dayjs/locale/zh-cn'
 import { getWeek } from '@/utils/util'
 import SvgIcon from '@/components/SvgIcon/index.vue'
 import { SearchOutlined, UnlockOutlined, LockOutlined, ArrowRightOutlined, UserOutlined } from '@ant-design/icons-vue'
-import * as api from './service'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
@@ -130,30 +129,30 @@ const isWrongPwd = ref(false)
 const afterUnlock = ref()
 
 const onUnlockScreen = () => {
-  api.userLogin({ username: userInfo.value.name, password: password.value }).then((res: any) => {
-    if (!password.value) {
-      isWrongPwd.value = true
-      return false
-    } else {
-      isWrongPwd.value = false
-    }
-    if (res) {
-      if (res.unlocked) {
-        afterUnlock.value = 'afterUnlock'
-        setTimeout(() => {
-          globalStore.lockScreen(false)
-          afterUnlock.value = null
-          isWrongPwd.value = false
-          isClickedUnlockBtn.value = false
-          password.value = null
-        }, 300)
-      } else {
-        isWrongPwd.value = true
-      }
-    } else {
-      isWrongPwd.value = true
-    }
-  })
+  // api.userLogin({ username: userInfo.value.name, password: password.value }).then((res: any) => {
+  //   if (!password.value) {
+  //     isWrongPwd.value = true
+  //     return false
+  //   } else {
+  //     isWrongPwd.value = false
+  //   }
+  //   if (res) {
+  //     if (res.unlocked) {
+  //       afterUnlock.value = 'afterUnlock'
+  //       setTimeout(() => {
+  //         globalStore.lockScreen(false)
+  //         afterUnlock.value = null
+  //         isWrongPwd.value = false
+  //         isClickedUnlockBtn.value = false
+  //         password.value = null
+  //       }, 300)
+  //     } else {
+  //       isWrongPwd.value = true
+  //     }
+  //   } else {
+  //     isWrongPwd.value = true
+  //   }
+  // })
 }
 </script>
 <style lang="less" scoped>

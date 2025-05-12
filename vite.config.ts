@@ -47,7 +47,7 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
     },
     esbuild: {
       // pure: VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
-      pure: VITE_DROP_CONSOLE ? ['debugger'] : []
+      drop: VITE_DROP_CONSOLE ? ['debugger'] : []
     },
     build: {
       sourcemap: true,
