@@ -4,9 +4,6 @@
 
 Giserman001-Admin 一款基于 Vue3.5、TypeScript、Vite6、Pinia3、Ant-design-vue4 开源的后台管理框架，使用目前最新技术栈开发。在一定程度上提高您的开发效率。另外本项目还封装了一些常用组件、Hooks、指令、动态路由、按钮级别权限控制等功能。
 
-### 在线预览 👀
-
-- Link：https://admin.spicyboy.cn
 
 ### 代码仓库 ⭐
 
