@@ -14,7 +14,8 @@
     "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,jsx,ts,tsx,vue,json,scss}\" --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "clean-dev": "vite --force",
-    "report": "cross-env npm_lifecycle_event=report vite build"
+    "report": "cross-env npm_lifecycle_event=report vite build",
+    "pushall": "git push && git push origin-github"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",
