@@ -1,0 +1,13 @@
+{
+  "name": "fake-server",
+  "version": "2.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "connect": "latest",
+    "vite-plugin-fake-server": "^2.2.0"
+  }
+}

@@ -1,95 +1,62 @@
-// import Mock from 'mockjs'
-import { builder, userNav } from './mockUtils'
-import { defineMock } from 'vite-plugin-mock-dev-server'
-// id: "@id",
-// number: "@int(5,9)",
-// name: "@name",
-// cname: "@cname",
-// date: "@dateTime",
-// reg: /\w{10}/,
+import { faker } from "@faker-js/faker";
+// import Mock from "mockjs";
+import { defineFakeRoute } from "vite-plugin-fake-server/client";
+import authMenuList from "./utils/data/menu";
+import { createResponse } from './utils/index'
 
-const userApi = {
-  Logout: '/auth/logout',
-  ForgePassword: '/auth/forge-password',
-  Register: '/auth/register',
-  SendSmsErr: '/account/sms_err',
-  // get my info
-  UserInfo: '/user/info',
-  UserMenu: '/user/nav'
-}
-
-export default defineMock([
+export default defineFakeRoute([
   {
-    url: '/json',
-    method: 'GET',
-    body({ params }) {
-      return {
-        msg: 'json2'
-      }
-    }
-  },
-  {
-    url: '/auth/login',
-    method: 'POST',
-    response(req, res, next) {
-      const { query, body, params, headers } = req
-      let permission = ''
-      if (body.username === 'admin') {
-        permission = 'admin'
-      } else if (body.username === 'ant.design') {
-        permission = 'user'
+    url: '/login',
+    method: 'post',
+    response: (data) => {
+      if (['admin', 'test'].includes(data.body.username)) {
+        return createResponse({
+          token: 'S:172285ffc872ab680e068bde360eae8f',
+        })
       } else {
-        res.statusCode = 403
-        res.end(JSON.stringify({ message: '用户名错误,只有admin和ant.design' }))
-        return
+        return createResponse(null, 403,'用户名或密码错误')
       }
-      const data = {
-        code: 200,
-        msg: 'ok',
-        data: {
-          token: '12312312',
-        }
-      }
-      res.end(JSON.stringify(data))
-    }
+    },
   },
   {
-    url: '/auth/2step-code',
-    method: 'GET',
-    body() {
-      return builder({ stepCode: '1' })
-    }
+    url: '/userInfo',
+    method: 'get',
+    response: () => {
+      return createResponse({
+        id: faker.string.uuid(),
+        avatar: faker.image.avatar(),
+        birthday: faker.date.birthdate(),
+        email: faker.internet.email(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        sex: faker.person.sexType(),
+        roles: ["admin"],
+        // avatar: 'https://picsum.photos/400/200?random=1'
+      })
+    },
   },
   {
-    url: '/account/sms',
-    method: 'POST',
-    body() {
-      return builder({ captcha: '123456' })
-    }
+    url: '/menu/list',
+    method: 'get',
+    response: () => {
+      return createResponse(authMenuList)
+    },
   },
   {
-    url: '/auth/logout',
-    method: 'GET',
-    body() {
-      return builder({}, '[测试接口] 注销成功1')
-    }
-  },
-  {
-    url: '/auth/unlock',
-    method: 'POST',
-    body() {
-      return { unlocked: true }
-    }
+    url: '/auth/buttons',
+    method: 'get',
+    response: () => {
+      return createResponse({
+        "useProTable": ["add", "batchAdd", "export", "batchDelete", "status"],
+        "authButton": ["add", "edit", "delete", "import", "export"]
+      })
+    },
   },
   {
     url: '/logout',
-    method: 'POST',
-    body() {
-      return {
-        code: 200,
-        msg: 'ok',
-        data: null
-      }
-    }
-  }
+    method: 'post',
+    response: () => {
+      return createResponse(null)
+    },
+  },
 ])

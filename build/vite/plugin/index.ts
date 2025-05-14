@@ -13,11 +13,13 @@ import { configImageminPlugin } from './imagemin'
 import { configUnpluginPlugin } from './unplugin'
 
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import mockDevServerPlugin from 'vite-plugin-mock-dev-server'
+
+import { vitePluginFakeServer } from "vite-plugin-fake-server"
 
 const lifecycle = process.env.npm_lifecycle_event
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
-  const { VITE_USE_IMAGEMIN, VITE_BUILD_COMPRESS, VITE_PROXY, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
+
+  const { VITE_USE_IMAGEMIN, VITE_BUILD_COMPRESS, VITE_PROXY, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE, VITE_USE_MOCK } = viteEnv
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
     Vue(),
@@ -31,10 +33,12 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
       // 指定symbolId格式
       symbolId: 'icon-[dir]-[name]'
     }),
-    mockDevServerPlugin({
-      prefix: '/',
-      include: 'mock/*.ts',
-      log: false
+    vitePluginFakeServer({
+      logger: true,
+      include: "mock",
+      exclude: ['mock/utils/**/*.ts'],
+      infixName: false,
+      enableProd: true,
     }),
     Unocss()
   ]

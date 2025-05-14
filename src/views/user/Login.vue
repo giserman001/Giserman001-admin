@@ -14,8 +14,6 @@
             @change="handleTabClick">
             <!-- 账户密码登录 -->
             <a-tab-pane key="tab1" tab="账户密码登录">
-              <a-alert v-if="isLoginError" type="error" showIcon style="margin-bottom: 24px"
-                :message="$t('user.login.message-invalid-credentials')" />
               <a-form-item v-bind="validateInfos.username">
                 <a-input size="large" type="text" placeholder="账户: admin or ant.design"
                   v-model:value="formRef.username">

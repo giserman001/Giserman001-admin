@@ -39,7 +39,7 @@
     "strict": false,
     "noUnusedLocals": false,
     "noImplicitReturns": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "noImplicitAny": false,
     "plugins": [
