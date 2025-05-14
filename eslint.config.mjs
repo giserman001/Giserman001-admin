@@ -15,7 +15,7 @@ export default antfu({
     html: true,
     markdown: 'prettier',
   },
-  ignores: ['**/node_modules/**', '**/dist/**', '**/public/**'],
+  ignores: ['**/node_modules/**', '**/dist/**', '**/public/**', '**/fakeServer/**'],
 }, {
   rules: {
     'no-sequences': 'off',
