@@ -12,7 +12,8 @@ export interface ViewportOffsetResult {
 }
 
 export function getBoundingClientRect(element: Element): DOMRect {
-  if (!element || !element.getBoundingClientRect) return {} as DOMRect
+  if (!element || !element.getBoundingClientRect)
+    return {} as DOMRect
 
   return element.getBoundingClientRect()
 }
@@ -23,42 +24,55 @@ function trim(string: string) {
 
 /* istanbul ignore next */
 export function hasClass(el: Element, cls: string) {
-  if (!el || !cls) return false
-  if (cls.includes(' ')) throw new Error('className should not contain space.')
-  if (el.classList) return el.classList.contains(cls)
+  if (!el || !cls)
+    return false
+  if (cls.includes(' '))
+    throw new Error('className should not contain space.')
+  if (el.classList)
+    return el.classList.contains(cls)
   else return ` ${el.className} `.includes(` ${cls} `)
 }
 
 /* istanbul ignore next */
 export function addClass(el: Element, cls: string) {
-  if (!el) return
+  if (!el)
+    return
   let curClass = el.className
   const classes = (cls || '').split(' ')
 
   for (let i = 0, j = classes.length; i < j; i++) {
     const clsName = classes[i]
-    if (!clsName) continue
+    if (!clsName)
+      continue
 
-    if (el.classList) el.classList.add(clsName)
-    else if (!hasClass(el, clsName)) curClass += ` ${clsName}`
+    if (el.classList)
+      el.classList.add(clsName)
+    else if (!hasClass(el, clsName))
+      curClass += ` ${clsName}`
   }
-  if (!el.classList) el.className = curClass
+  if (!el.classList)
+    el.className = curClass
 }
 
 /* istanbul ignore next */
 export function removeClass(el: Element, cls: string) {
-  if (!el || !cls) return
+  if (!el || !cls)
+    return
   const classes = cls.split(' ')
   let curClass = ` ${el.className} `
 
   for (let i = 0, j = classes.length; i < j; i++) {
     const clsName = classes[i]
-    if (!clsName) continue
+    if (!clsName)
+      continue
 
-    if (el.classList) el.classList.remove(clsName)
-    else if (hasClass(el, clsName)) curClass = curClass.replace(` ${clsName} `, ' ')
+    if (el.classList)
+      el.classList.remove(clsName)
+    else if (hasClass(el, clsName))
+      curClass = curClass.replace(` ${clsName} `, ' ')
   }
-  if (!el.classList) el.className = trim(curClass)
+  if (!el.classList)
+    el.className = trim(curClass)
 }
 /**
  * Get the left and top offset of the current element
@@ -102,7 +116,7 @@ export function getViewportOffset(element: Element): ViewportOffsetResult {
     right: clientWidth - rectWidth - left,
     bottom: clientHeight - rectHeight - top,
     rightIncludeBody: clientWidth - left,
-    bottomIncludeBody: clientHeight - top
+    bottomIncludeBody: clientHeight - top,
   }
 }
 
@@ -115,12 +129,13 @@ export function hackCss(attr: string, value: string) {
   })
   return {
     ...styleObj,
-    [attr]: value
+    [attr]: value,
   }
 }
 
 export function setStyle(el: HTMLElement, style: CSSProperties) {
-  if (!el || !style) return
+  if (!el || !style)
+    return
   Object.keys(style).forEach((key) => {
     el.style.setProperty(key, unref(style[key]))
   })
@@ -128,18 +143,21 @@ export function setStyle(el: HTMLElement, style: CSSProperties) {
 
 /* istanbul ignore next */
 export function on(element: Element | HTMLElement | Document | Window, event: string, handler: EventListenerOrEventListenerObject): void {
-  if (element && event && handler) element.addEventListener(event, handler, false)
+  if (element && event && handler)
+    element.addEventListener(event, handler, false)
 }
 
 /* istanbul ignore next */
 export function off(element: Element | HTMLElement | Document | Window, event: string, handler: Fn): void {
-  if (element && event && handler) element.removeEventListener(event, handler, false)
+  if (element && event && handler)
+    element.removeEventListener(event, handler, false)
 }
 
 /* istanbul ignore next */
 export function once(el: HTMLElement, event: string, fn: EventListener): void {
   const listener = function (this: any, ...args: any) {
-    if (fn) fn.apply(this, args)
+    if (fn)
+      fn.apply(this, args)
 
     off(el, event, listener)
   }
@@ -151,7 +169,8 @@ export function useRafThrottle<T extends FunctionArgs>(fn: T): T {
 
   // @ts-expect-error
   return function (...args: any[]) {
-    if (locked) return
+    if (locked)
+      return
     locked = true
     window.requestAnimationFrame(() => {
       fn.apply(this, args)
@@ -162,14 +181,16 @@ export function useRafThrottle<T extends FunctionArgs>(fn: T): T {
 
 export function getParentElByClassName(el: HTMLElement, className: string) {
   while (el) {
-    if (el.classList?.contains(className)) return el
+    if (el.classList?.contains(className))
+      return el
     el = el.parentElement!
   }
   return null
 }
 
 export function isInsideHiddenElement(element?: HTMLElement) {
-  if (!element) return false
+  if (!element)
+    return false
   let currentElement = element
 
   while (currentElement) {

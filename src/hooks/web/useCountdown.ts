@@ -21,11 +21,12 @@ export function useCountDown({ enable = true, seconds = 0 }: CountdownParams) {
             clearInterval(timer)
           }
         }, 1000)
-      } else {
+      }
+      else {
         clearInterval(timer)
         time.value = 0
       }
-    }
+    },
   )
 
   return { time }

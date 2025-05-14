@@ -1,6 +1,3 @@
-<template>
-  <div :id="id"></div>
-</template>
 <script lang="ts" setup name="ChartsPie">
 import { Pie } from '@antv/g2plot'
 
@@ -22,22 +19,27 @@ onMounted(() => {
         style: {
           lineWidth: 2,
           stroke: '#fff',
-          fillOpacity: 0.7
-        }
-      }
+          fillOpacity: 0.7,
+        },
+      },
     },
     legend: {
-      position: 'bottom'
+      position: 'bottom',
     },
     statistic: {
       title: false,
       content: {
-        content: false
-      }
-    }
+        content: false,
+      },
+    },
   })
 
   piePlot.render()
 })
 </script>
+
+<template>
+  <div :id="id" />
+</template>
+
 <style lang="less"></style>

@@ -1,6 +1,7 @@
-import tinycolor, { Instance } from 'tinycolor2'
+import type { Instance } from 'tinycolor2'
 import { isDef, isNull } from '@aesoper/normal-utils'
 import { debounce } from 'lodash-es'
+import tinycolor from 'tinycolor2'
 
 export interface Alpha {
   a: number
@@ -78,17 +79,23 @@ export class Color {
 
     if (data && data.hsl) {
       this.instance = tinycolor(data.hsl)
-    } else if (data && data.hex && data.hex.length > 0) {
+    }
+    else if (data && data.hex && data.hex.length > 0) {
       this.instance = tinycolor(data.hex)
-    } else if (data && data.hex8 && data.hex8.length > 0) {
+    }
+    else if (data && data.hex8 && data.hex8.length > 0) {
       this.instance = tinycolor(data.hex8)
-    } else if (data && data.hsv) {
+    }
+    else if (data && data.hsv) {
       this.instance = tinycolor(data.hsv)
-    } else if (data && data.rgba) {
+    }
+    else if (data && data.rgba) {
       this.instance = tinycolor(data.rgba)
-    } else if (data && data.rgb) {
+    }
+    else if (data && data.rgb) {
       this.instance = tinycolor(data.rgb)
-    } else {
+    }
+    else {
       this.instance = tinycolor(data)
     }
 
@@ -113,7 +120,7 @@ export class Color {
         h: Math.round(hsl.h),
         s: Number(Math.round(hsl.s * 100).toFixed(2)) / 100,
         l: Number(Math.round(hsl.l * 100).toFixed(2)) / 100,
-        a: Math.round(hsl.a * 100) / 100
+        a: Math.round(hsl.a * 100) / 100,
       },
       hex: this.instance.toHexString().toUpperCase(),
       hex8: this.instance.toHex8String().toUpperCase(),
@@ -121,17 +128,17 @@ export class Color {
         r: Math.round(rgb.r),
         g: Math.round(rgb.g),
         b: Math.round(rgb.b),
-        a: Math.round(rgb.a * 100) / 100
+        a: Math.round(rgb.a * 100) / 100,
       },
       hsv: {
         h: Math.round(hsv.h),
         s: Math.round(hsv.s * 100) / 100,
         v: Math.round(hsv.v * 100) / 100,
-        a: Math.round(hsl.a * 100) / 100
+        a: Math.round(hsl.a * 100) / 100,
       },
       oldHue: Math.round(data.h || oldHue || hsl.h),
       source: data.source,
-      alpha: Math.round((data.a || this.instance.getAlpha()) * 100) / 100
+      alpha: Math.round((data.a || this.instance.getAlpha()) * 100) / 100,
     }
   }
 
@@ -141,14 +148,14 @@ export class Color {
 }
 
 export const debounceFn = debounce(
-  (fn: Function) => {
+  (fn: () => void) => {
     fn()
   },
   200,
   {
     leading: true,
-    trailing: false
-  }
+    trailing: false,
+  },
 )
 
 export const MAX_STORAGE_LENGTH = 8

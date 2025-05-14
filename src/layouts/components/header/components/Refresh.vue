@@ -1,9 +1,3 @@
-<template>
-  <div class="ly-h-full">
-    <ReloadOutlined class="ly-text-size-[18px] ly-cursor-pointer" style="" @click="onRefresh" />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ReloadOutlined } from '@ant-design/icons-vue'
 
@@ -13,7 +7,7 @@ const keepAliveStore = useKeepAliveStore()
 
 const route = useRoute()
 
-const onRefresh = () => {
+function onRefresh() {
   setTimeout(() => {
     route.meta.isKeepAlive && keepAliveStore.removeKeepAliveName(route.fullPath as string)
     emits('refresh', false)
@@ -24,5 +18,11 @@ const onRefresh = () => {
   }, 0)
 }
 </script>
+
+<template>
+  <div class="ly-h-full">
+    <ReloadOutlined class="ly-cursor-pointer ly-text-size-[18px]" style="" @click="onRefresh" />
+  </div>
+</template>
 
 <style scoped></style>

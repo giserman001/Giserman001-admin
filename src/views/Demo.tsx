@@ -1,5 +1,5 @@
-import HelloWord from '../components/HelloWord'
 import Logo from '@/assets/icons/logo.svg'
+import HelloWord from '../components/HelloWord'
 
 export default defineComponent({
   name: 'App',
@@ -11,5 +11,5 @@ export default defineComponent({
         <HelloWord />
       </>
     )
-  }
+  },
 })

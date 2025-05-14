@@ -1,8 +1,8 @@
 import type { Ref } from 'vue'
 
-import { isObject, isWindow } from '@/utils/is'
 import { useThrottleFn } from '@vueuse/core'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { isObject, isWindow } from '@/utils/is'
 
 export function useScrollLoc(
   refEl: Ref<Element | Window | null>,

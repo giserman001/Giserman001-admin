@@ -1,53 +1,29 @@
-<template>
-  <div
-    class="bee-hue-colorPicker transparent"
-    :class="{
-      'is-vertical': vertical,
-      'small-hue-slider': size === 'small' && !vertical
-    }"
-  >
-    <div class="bee-hue-colorPicker__inner" ref="bar" :style="linearGradient">
-      <div
-        class="bee-hue-colorPicker__inner-pointer"
-        :class="{ 'small-bar': size === 'small' && !vertical }"
-        ref="barHandle"
-        :style="{
-          left: handleLeft + 'px',
-          top: handleTop + 'px'
-        }"
-      >
-        <div class="bee-hue-colorPicker__inner-handle" :class="{ vertical: vertical }"></div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup name="Hue">
-import { DOMUtils, DragEventOptions } from '@aesoper/normal-utils'
-
-const bg = '-webkit-linear-gradient(left, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.66%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.66%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)'
-const verticalBg =
-  '-webkit-linear-gradient(bottom, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.66%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.66%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)'
+import type { DragEventOptions } from '@aesoper/normal-utils'
+import { DOMUtils } from '@aesoper/normal-utils'
 
 const props = defineProps({
   vertical: {
     type: Boolean,
-    default: false
+    default: false,
   },
   size: {
     type: String,
-    default: 'default'
+    default: 'default',
   },
   hue: {
     type: Number,
     default: 0,
     validator: (value: number) => {
       return value >= 0 && value <= 360
-    }
-  }
+    },
+  },
 })
-
 const emit = defineEmits(['update:hue', 'change'])
+const bg = '-webkit-linear-gradient(left, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.66%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.66%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)'
+const verticalBg
+  = '-webkit-linear-gradient(bottom, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 16.66%, rgb(0, 255, 0) 33.33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66.66%, rgb(255, 0, 255) 83.33%, rgb(255, 0, 0) 100%)'
+
 const bar = ref<HTMLElement | null>(null)
 const barHandle = ref<HTMLElement | null>(null)
 
@@ -58,12 +34,13 @@ const currentHue = ref(props.hue)
 
 const linearGradient = computed(() => {
   return {
-    background: props.vertical ? verticalBg : bg
+    background: props.vertical ? verticalBg : bg,
   }
 })
 
-const getBarLeftPosition = () => {
-  if (props.vertical) return 0
+function getBarLeftPosition() {
+  if (props.vertical)
+    return 0
   if (bar.value && barHandle.value) {
     const rect = bar.value?.getBoundingClientRect()
 
@@ -76,8 +53,9 @@ const getBarLeftPosition = () => {
   return 0
 }
 
-const getBarTopPosition = () => {
-  if (!props.vertical) return 0
+function getBarTopPosition() {
+  if (!props.vertical)
+    return 0
   if (bar.value && barHandle.value) {
     const rect = bar.value?.getBoundingClientRect()
 
@@ -90,12 +68,12 @@ const getBarTopPosition = () => {
   return 0
 }
 
-const updatePosition = () => {
+function updatePosition() {
   handleLeft.value = getBarLeftPosition()
   handleTop.value = getBarTopPosition()
 }
 
-const handleDrag = (event: MouseEvent) => {
+function handleDrag(event: MouseEvent) {
   if (bar.value && barHandle.value) {
     const rect = bar.value?.getBoundingClientRect()
 
@@ -105,7 +83,8 @@ const handleDrag = (event: MouseEvent) => {
       left = Math.max(barHandle.value.offsetWidth / 2, left)
 
       currentHue.value = Math.round(((left - barHandle.value.offsetWidth / 2) / (rect.width - barHandle.value.offsetWidth)) * 360)
-    } else {
+    }
+    else {
       let top = event.clientY - rect.top
       top = Math.min(top, rect.height - barHandle.value?.offsetHeight / 2)
       top = Math.max(barHandle.value.offsetHeight / 2, top)
@@ -118,26 +97,18 @@ const handleDrag = (event: MouseEvent) => {
   }
 }
 
-const handleClick = (event: MouseEvent) => {
-  const target = event.target
-
-  if (target !== barHandle.value) {
-    handleDrag(event)
-  }
-}
-
 watch(
   () => props.hue,
   (hue: number) => {
     currentHue.value = hue
-  }
+  },
 )
 
 watch(
   () => currentHue.value,
   () => {
     updatePosition()
-  }
+  },
 )
 
 onMounted(() => {
@@ -148,7 +119,7 @@ onMounted(() => {
       },
       end: (event: Event) => {
         handleDrag(event as MouseEvent)
-      }
+      },
     }
 
     if (bar.value && barHandle.value) {
@@ -159,6 +130,30 @@ onMounted(() => {
   })
 })
 </script>
+
+<template>
+  <div
+    class="transparent bee-hue-colorPicker"
+    :class="{
+      'is-vertical': vertical,
+      'small-hue-slider': size === 'small' && !vertical,
+    }"
+  >
+    <div ref="bar" class="bee-hue-colorPicker__inner" :style="linearGradient">
+      <div
+        ref="barHandle"
+        class="bee-hue-colorPicker__inner-pointer"
+        :class="{ 'small-bar': size === 'small' && !vertical }"
+        :style="{
+          left: `${handleLeft}px`,
+          top: `${handleTop}px`,
+        }"
+      >
+        <div class="bee-hue-colorPicker__inner-handle" :class="{ vertical }" />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="less" scoped>
 .small-hue-slider {

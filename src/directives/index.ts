@@ -1,11 +1,11 @@
-import { App, Directive } from "vue";
+import type { App, Directive } from 'vue'
 // import auth from "./modules/auth";
-import copy from "./modules/copy";
-import waterMarker from "./modules/waterMarker";
-import draggable from "./modules/draggable";
-import debounce from "./modules/debounce";
-import throttle from "./modules/throttle";
-import longpress from "./modules/longpress";
+import copy from './modules/copy'
+import debounce from './modules/debounce'
+import draggable from './modules/draggable'
+import longpress from './modules/longpress'
+import throttle from './modules/throttle'
+import waterMarker from './modules/waterMarker'
 
 const directivesList: { [key: string]: Directive } = {
   // auth,
@@ -14,15 +14,15 @@ const directivesList: { [key: string]: Directive } = {
   draggable,
   debounce,
   throttle,
-  longpress
-};
+  longpress,
+}
 
 const directives = {
-  install: function (app: App<Element>) {
-    Object.keys(directivesList).forEach(key => {
-      app.directive(key, directivesList[key]);
-    });
-  }
-};
+  install(app: App<Element>) {
+    Object.keys(directivesList).forEach((key) => {
+      app.directive(key, directivesList[key])
+    })
+  },
+}
 
-export default directives;
+export default directives

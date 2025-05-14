@@ -1,12 +1,12 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import directives from '@/directives/index'
 import router from '@/router'
 
-import directives from "@/directives/index";
+import pinia from '@/store'
+
+import App from './App.vue'
 
 import 'virtual:svg-icons-register'
-
-import pinia from '@/store'
 
 import 'ant-design-vue/dist/reset.css'
 

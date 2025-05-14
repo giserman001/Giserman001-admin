@@ -1,44 +1,28 @@
-<template>
-  <div class="bee-ele-colorPicker">
-    <div class="bee-ele-row">
-      <saturation class="bee-ele-saturation" :hidden="true" :saturation="currentColor.hsv.s" :hue="currentColor.hsv.h"
-        :value="currentColor.hsv.v" @change="onSaturationChange" />
-      <hue class="bee-ele-hue" :vertical="true" size="small" :hue="currentColor.hsv.h" @change="onHueChange"
-        v-if="!disableHue" />
-    </div>
-    <alpha style="width: 257px" :color="currentColor.hex8" @change="onAlphaChange" :alpha="currentColor.alpha"
-      v-if="!disableAlpha" />
-
-    <v-color-input style="width: 257px" :color="currentColor" @change="onInputChange" />
-
-    <history :color-list="storageColorList" :round="historyRound" @change="onCompactChange" v-if="!disableHistory" />
-  </div>
-</template>
-
 <script lang="ts" setup name="EleColorPicker">
-import Saturation from './common/Saturation.vue'
-import Hue from './common/Hue.vue'
+import type { ColorAttrs, ColorFormat, ColorInput } from './color'
+import ls from '@/utils/Storage'
+import { Color, debounceFn, MAX_STORAGE_LENGTH, STORAGE_COLOR_KEY } from './color'
 import Alpha from './common/Alpha.vue'
 import History from './common/History.vue'
+import Hue from './common/Hue.vue'
+import Saturation from './common/Saturation.vue'
 import VColorInput from './common/VColorInput.vue'
-import { Color, ColorAttrs, ColorFormat, ColorInput, debounceFn, MAX_STORAGE_LENGTH, STORAGE_COLOR_KEY } from './color'
-import ls from '@/utils/Storage'
 
 const props = defineProps({
   color: {
     type: [String, Object] as PropType<ColorInput>,
-    default: '#000000'
+    default: '#000000',
   },
   format: {
-    type: String as PropType<ColorFormat>
+    type: String as PropType<ColorFormat>,
   },
   disableAlpha: Boolean,
   disableHue: Boolean,
   disableHistory: Boolean,
   historyRound: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 const emit = defineEmits(['update:color', 'change'])
@@ -48,7 +32,7 @@ const currentColor = ref<ColorAttrs>(colorClass.parseColor(props.color))
 
 const storageColorList = ref<string[]>([])
 
-const onStorageColor = () => {
+function onStorageColor() {
   storageColorList.value = storageColorList.value.filter((value) => {
     return value !== currentColor.value.hex8
   })
@@ -59,59 +43,60 @@ const onStorageColor = () => {
   ls.set(STORAGE_COLOR_KEY, storageColorList.value)
 }
 
-const onInitColorList = () => {
+function onInitColorList() {
   storageColorList.value = ls.get(STORAGE_COLOR_KEY) || []
 }
 
-const doOnChange = (data: any, oldHue?: number): void => {
+function doOnChange(data: any, oldHue?: number): void {
   currentColor.value = colorClass.parseColor(data, oldHue)
   debounceFn(onStorageColor)
 }
 
-const doUpdate = () => {
+function doUpdate() {
   if (props.format) {
     emit('update:color', colorClass.format(props.format))
     emit('change', colorClass.format(props.format))
-  } else {
+  }
+  else {
     emit('update:color', currentColor.value)
     emit('change', currentColor.value)
   }
 }
 
-const onCompactChange = (color: string) => {
+function onCompactChange(color: string) {
   doOnChange(color)
   doUpdate()
 }
 
-const onAlphaChange = (alpha: number) => {
+function onAlphaChange(alpha: number) {
   doOnChange(
     {
       h: currentColor.value.hsl.h,
       s: currentColor.value.hsl.s,
       l: currentColor.value.hsl.l,
       a: alpha,
-      source: 'alpha'
+      source: 'alpha',
     },
-    currentColor.value.hsl.h
+    currentColor.value.hsl.h,
   )
   doUpdate()
 }
 
-const onSaturationChange = (saturation: number, bright: number) => {
+function onSaturationChange(saturation: number, bright: number) {
   doOnChange(
     {
       h: currentColor.value.hsv.h,
       s: saturation,
       v: bright,
       a: currentColor.value.hsv.a,
-      source: 'saturation'
+      source: 'saturation',
     },
-    currentColor.value.hsv.h
+    currentColor.value.hsv.h,
   )
   doUpdate()
 }
 
-const onHueChange = (hue: number) => {
+function onHueChange(hue: number) {
   const { s: saturation, v: bright, a: alpha } = currentColor.value.hsv
   doOnChange(
     {
@@ -119,15 +104,15 @@ const onHueChange = (hue: number) => {
       s: saturation,
       v: bright,
       a: alpha,
-      source: 'hue'
+      source: 'hue',
     },
-    hue
+    hue,
   )
 
   doUpdate()
 }
 
-const onInputChange = (val: ColorAttrs) => {
+function onInputChange(val: ColorAttrs) {
   currentColor.value = val
   doUpdate()
 }
@@ -137,13 +122,36 @@ watch(
   (newVal: ColorInput) => {
     doOnChange(toRaw(newVal))
     onInitColorList()
-  }
+  },
 )
 
 onMounted(() => {
   onInitColorList()
 })
 </script>
+
+<template>
+  <div class="bee-ele-colorPicker">
+    <div class="bee-ele-row">
+      <Saturation
+        class="bee-ele-saturation" :hidden="true" :saturation="currentColor.hsv.s" :hue="currentColor.hsv.h"
+        :value="currentColor.hsv.v" @change="onSaturationChange"
+      />
+      <Hue
+        v-if="!disableHue" class="bee-ele-hue" :vertical="true" size="small" :hue="currentColor.hsv.h"
+        @change="onHueChange"
+      />
+    </div>
+    <Alpha
+      v-if="!disableAlpha" style="width: 257px" :color="currentColor.hex8" :alpha="currentColor.alpha"
+      @change="onAlphaChange"
+    />
+
+    <VColorInput style="width: 257px" :color="currentColor" @change="onInputChange" />
+
+    <History v-if="!disableHistory" :color-list="storageColorList" :round="historyRound" @change="onCompactChange" />
+  </div>
+</template>
 
 <style lang="less" scoped>
 .bee-ele-colorPicker {

@@ -1,3 +1,11 @@
+<script setup lang="ts" name="throttleDirect">
+import { message } from 'ant-design-vue'
+
+function throttleClick() {
+  message.success('我是节流按钮触发的事件 🍍🍓🍌')
+}
+</script>
+
 <template>
   <a-card ly-h-full>
     <div ly-flex ly-flex-col ly-items-center>
@@ -6,13 +14,6 @@
     </div>
   </a-card>
 </template>
-
-<script setup lang="ts" name="throttleDirect">
-import { message } from "ant-design-vue";
-const throttleClick = () => {
-  message.success("我是节流按钮触发的事件 🍍🍓🍌");
-};
-</script>
 
 <style scoped lang="less">
 </style>

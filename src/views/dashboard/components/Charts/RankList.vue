@@ -1,16 +1,3 @@
-<template>
-  <div class="rank">
-    <h4 class="title">{{ title }}</h4>
-    <ul class="list">
-      <li :key="index" v-for="(item, index) in list">
-        <span :class="index < 3 ? 'active' : null">{{ index + 1 }}</span>
-        <span class="name">{{ item.name }}</span>
-        <span class="total">{{ item.total }}</span>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'RankList',
@@ -18,15 +5,28 @@ export default {
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     list: {
       type: Array,
-      default: null
-    }
-  }
+      default: null,
+    },
+  },
 }
 </script>
+
+<template>
+  <div class="rank">
+    <h4 class="title">{{ title }}</h4>
+    <ul class="list">
+      <li v-for="(item, index) in list" :key="index">
+        <span :class="index < 3 ? 'active' : null">{{ index + 1 }}</span>
+        <span class="name">{{ item.name }}</span>
+        <span class="total">{{ item.total }}</span>
+      </li>
+    </ul>
+  </div>
+</template>
 
 <style lang="less" scoped>
 @import '@/style/variables.less';

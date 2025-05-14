@@ -1,12 +1,13 @@
 import { isDev } from '@/utils/util'
 
 export default {
-  mounted(el: HTMLElement, binding, vnode, prevVnode) {
+  mounted(el: HTMLElement, binding, vnode) {
     let distance = 0
     // 开发模式高度直接定位450,防止影响开发
     if (isDev) {
       distance = 470
-    } else {
+    }
+    else {
       // restBottomHeight 剩余底部留出的高度
       const restBottomHeight = 120
       // 视口高度
@@ -19,16 +20,17 @@ export default {
       distance = Math.ceil(clientHeight) - Math.ceil(domToTop) - restBottomHeight
     }
 
-    if (vnode.ctx.props.hasOwnProperty('height')) {
+    if (Object.prototype.hasOwnProperty.call(vnode.ctx.props, 'height')) {
       vnode.ctx.props.height = distance
-    } else {
-      el.style.height = distance + 'px'
+    }
+    else {
+      el.style.height = `${distance}px`
       el.style.overflow = 'auto'
     }
-  }
+  },
 }
 
-export const calcHeight = (el, restBottomHeight = 15) => {
+export function calcHeight(el, restBottomHeight = 15) {
   const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
   const domToTop = el.getBoundingClientRect().bottom
   return Math.ceil(clientHeight) - Math.ceil(domToTop) - restBottomHeight

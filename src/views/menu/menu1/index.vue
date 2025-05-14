@@ -1,3 +1,6 @@
+<script setup lang="ts" name="menu1">
+</script>
+
 <template>
   <a-card ly-h-full>
     <div ly-flex ly-flex-col ly-items-center>
@@ -5,9 +8,6 @@
     </div>
   </a-card>
 </template>
-
-<script setup lang="ts" name="menu1">
-</script>
 
 <style scoped lang="less">
 </style>

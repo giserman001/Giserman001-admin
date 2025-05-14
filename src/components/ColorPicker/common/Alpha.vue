@@ -1,51 +1,28 @@
-<template>
-  <div
-    class="bee-alpha-slider transparent"
-    :class="{
-      'is-vertical': vertical,
-      'small-alpha-slider': size === 'small' && !vertical
-    }"
-  >
-    <div class="bee-alpha-slider__bar" ref="barEle" :style="gradientColor" @click="onSliderClick">
-      <div
-        class="bee-alpha-slider__bar-pointer"
-        :class="{ 'small-bar': size === 'small' && !vertical }"
-        ref="cursorEle"
-        :style="{
-          left: cursorLeft + 'px',
-          top: cursorTop + 'px'
-        }"
-      >
-        <div class="bee-alpha-slider__bar-handle" :class="{ vertical: vertical }"></div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup name="Alpha">
-import { DOMUtils, DragEventOptions } from '@aesoper/normal-utils'
+import type { DragEventOptions } from '@aesoper/normal-utils'
+import { DOMUtils } from '@aesoper/normal-utils'
 import tinycolor from 'tinycolor2'
 
 const props = defineProps({
   color: {
     type: String,
-    default: '#000000'
+    default: '#000000',
   },
   vertical: {
     type: Boolean,
-    default: false
+    default: false,
   },
   size: {
     type: String,
-    default: 'default'
+    default: 'default',
   },
   alpha: {
     type: Number,
     default: 1,
     validator: (value: number) => {
       return value >= 0 && value <= 1
-    }
-  }
+    },
+  },
 })
 const emit = defineEmits(['update:alpha', 'change'])
 const barEle = ref<HTMLElement | null>(null)
@@ -65,12 +42,13 @@ const gradientColor = computed(() => {
     deg = 'bottom'
   }
   return {
-    background: `linear-gradient(to ${deg}, ${alphaGgb}, ${rgb}`
+    background: `linear-gradient(to ${deg}, ${alphaGgb}, ${rgb}`,
   }
 })
 
-const getCursorLeft = () => {
-  if (props.vertical) return 0
+function getCursorLeft() {
+  if (props.vertical)
+    return 0
   if (barEle.value && cursorEle.value) {
     const alpha = currentAlpha.value
     const rect = barEle.value?.getBoundingClientRect()
@@ -81,8 +59,9 @@ const getCursorLeft = () => {
   return 0
 }
 
-const getCursorTop = () => {
-  if (!props.vertical) return 0
+function getCursorTop() {
+  if (!props.vertical)
+    return 0
   if (barEle.value && cursorEle.value) {
     const alpha = currentAlpha.value
     const rect = barEle.value?.getBoundingClientRect()
@@ -92,12 +71,12 @@ const getCursorTop = () => {
   return 0
 }
 
-const updatePosition = () => {
+function updatePosition() {
   cursorLeft.value = getCursorLeft()
   cursorTop.value = getCursorTop()
 }
 
-const onDragSlider = (event: MouseEvent) => {
+function onDragSlider(event: MouseEvent) {
   event.stopPropagation()
   if (barEle.value && cursorEle.value) {
     const rect = barEle.value?.getBoundingClientRect()
@@ -108,7 +87,8 @@ const onDragSlider = (event: MouseEvent) => {
       left = Math.min(left, rect.width - cursorEle.value.offsetWidth / 2)
 
       currentAlpha.value = Math.round(((left - cursorEle.value.offsetWidth / 2) / (rect.width - cursorEle.value.offsetWidth)) * 100) / 100
-    } else {
+    }
+    else {
       let top = event.clientY - rect.top
       top = Math.max(cursorEle.value.offsetHeight / 2, top)
       top = Math.min(top, rect.height - cursorEle.value.offsetHeight / 2)
@@ -121,7 +101,7 @@ const onDragSlider = (event: MouseEvent) => {
   }
 }
 
-const onSliderClick = (event: MouseEvent) => {
+function onSliderClick(event: MouseEvent) {
   const target = event.target
 
   if (target !== barEle.value) {
@@ -133,14 +113,14 @@ watch(
   () => props.alpha,
   () => {
     currentAlpha.value = props.alpha
-  }
+  },
 )
 
 watch(
   () => currentAlpha.value,
   () => {
     updatePosition()
-  }
+  },
 )
 
 onMounted(() => {
@@ -151,7 +131,7 @@ onMounted(() => {
       },
       end: (event: Event) => {
         onDragSlider(event as MouseEvent)
-      }
+      },
     }
 
     if (barEle.value && cursorEle.value) {
@@ -162,6 +142,30 @@ onMounted(() => {
   updatePosition()
 })
 </script>
+
+<template>
+  <div
+    class="bee-alpha-slider transparent"
+    :class="{
+      'is-vertical': vertical,
+      'small-alpha-slider': size === 'small' && !vertical,
+    }"
+  >
+    <div ref="barEle" class="bee-alpha-slider__bar" :style="gradientColor" @click="onSliderClick">
+      <div
+        ref="cursorEle"
+        class="bee-alpha-slider__bar-pointer"
+        :class="{ 'small-bar': size === 'small' && !vertical }"
+        :style="{
+          left: `${cursorLeft}px`,
+          top: `${cursorTop}px`,
+        }"
+      >
+        <div class="bee-alpha-slider__bar-handle" :class="{ vertical }" />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="less" scoped>
 .small-alpha-slider {

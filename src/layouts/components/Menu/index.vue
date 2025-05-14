@@ -1,37 +1,28 @@
-<template>
-  <a-menu :mode="mode" :theme="theme" :openKeys="openKeys" :selectedKeys="selectedKeys" @openChange="onOpenChange"
-    @click="onSelect">
-    <template v-for="m in menu" :key="m.path">
-      <SubMenu :menu="m" :key="m.path" v-if="!m.meta.isHide" />
-    </template>
-  </a-menu>
-</template>
 <script lang="ts" setup name="Menu">
-import SubMenu from './SubMenu.vue'
 import type { MenuMode, MenuTheme } from 'ant-design-vue'
 import { getTargetPathRoute } from '@/utils/index'
-
+import SubMenu from './SubMenu.vue'
 
 const props = defineProps({
   menu: {
     type: Array as PropType<Menu.MenuOptions[]>,
-    required: true
+    required: true,
   },
   theme: {
     type: String as PropType<MenuTheme>,
     required: false,
-    default: 'light'
+    default: 'light',
   },
   mode: {
     type: String as PropType<MenuMode>,
     required: false,
-    default: 'inline'
+    default: 'inline',
   },
   collapsed: {
     type: Boolean,
     required: false,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['menuSelect'])
@@ -59,26 +50,25 @@ const rootSubmenuKeys: ComputedRef<string[]> = computed(() => {
 watch(
   () => openKeys.value,
   (_val, oldVal) => {
-    cachedOpenKeys.value = oldVal;
+    cachedOpenKeys.value = oldVal
   },
-);
+)
 
 watch(
   () => props.collapsed,
   (val) => {
     openKeys.value = val ? [] : cachedOpenKeys.value
-  }
+  },
 )
 
 // 主要作用:使用router.push跳转页面时更左侧新菜单选中项
 watch(() => route, () => {
   updateActiveMenu()
-  }, {
-    deep: true
-  }
-)
+}, {
+  deep: true,
+})
 
-const onOpenChange = (openKeysParams: string[]) => {
+function onOpenChange(openKeysParams: string[]) {
   // 水平模式时
   if (props.mode === 'horizontal') {
     openKeys.value = openKeysParams
@@ -87,24 +77,26 @@ const onOpenChange = (openKeysParams: string[]) => {
   // 非水平模式时
   if (globalStore.state.accordion) {
     // 类似手风琴(目前只能打开一个菜单)
-    const latestOpenKey: string = openKeysParams.find((key) => !openKeys.value.includes(key))
+    const latestOpenKey: string = openKeysParams.find(key => !openKeys.value.includes(key))
     if (!rootSubmenuKeys.value.includes(latestOpenKey)) {
       openKeys.value = openKeysParams
-    } else {
+    }
+    else {
       openKeys.value = latestOpenKey ? [latestOpenKey] : []
     }
-  } else {
+  }
+  else {
     // 全部打开菜单
     openKeys.value = openKeysParams
   }
 }
 
-const onSelect = ({ item, key, keyPath }) => {
+function onSelect({ item, key, keyPath }) {
   selectedKeys.value = keyPath
   emit('menuSelect', { item, key, selectedKeys: selectedKeys.value })
 }
 
-const updateActiveMenu = () => {
+function updateActiveMenu() {
   const routes = route.matched.concat()
 
   const isHaveParams = routes[routes.length - 1].path.indexOf('/:') > 0
@@ -114,17 +106,19 @@ const updateActiveMenu = () => {
   const { isHide } = route.meta
   if (isHide && route.meta.activeMenu) {
     selectedKeys.value = [route.meta.activeMenu as string]
-  } else {
+  }
+  else {
     selectedKeys.value = [routes[routes.length - 1].path]
   }
 
   let openKeysArr: string[] = []
   if (props.mode === 'inline') {
-    if(isHide && route.meta.activeMenu) {
-      const newArr = pathRoute.slice(0, -1);
-      newArr.push(route.meta.activeMenu as string);
+    if (isHide && route.meta.activeMenu) {
+      const newArr = pathRoute.slice(0, -1)
+      newArr.push(route.meta.activeMenu as string)
       openKeysArr = newArr
-    } else {
+    }
+    else {
       openKeysArr = pathRoute
     }
   }
@@ -136,6 +130,18 @@ onMounted(() => {
   updateActiveMenu()
 })
 </script>
+
+<template>
+  <a-menu
+    :mode="mode" :theme="theme" :open-keys="openKeys" :selected-keys="selectedKeys" @open-change="onOpenChange"
+    @click="onSelect"
+  >
+    <template v-for="m in menu" :key="m.path">
+      <SubMenu v-if="!m.meta.isHide" :key="m.path" :menu="m" />
+    </template>
+  </a-menu>
+</template>
+
 <style lang="less" scoped>
 ::v-deep(.ant-menu) {
   min-height: 100% !important;

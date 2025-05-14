@@ -1,3 +1,24 @@
+<script>
+export default {
+  name: 'ChartCard',
+  props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    total: {
+      type: [Function, Number, String],
+      required: false,
+      default: null,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+}
+</script>
+
 <template>
   <a-card :loading="loading" :body-style="{ padding: '20px 24px 8px' }" :bordered="false">
     <div class="chart-card-header">
@@ -6,7 +27,7 @@
           <slot name="title">{{ title }}</slot>
         </span>
         <span class="chart-card-action">
-          <slot name="action"></slot>
+          <slot name="action" />
         </span>
       </div>
       <div class="total">
@@ -17,37 +38,16 @@
     </div>
     <div class="chart-card-content">
       <div class="content-fix">
-        <slot></slot>
+        <slot />
       </div>
     </div>
     <div class="chart-card-footer">
       <div class="field">
-        <slot name="footer"></slot>
+        <slot name="footer" />
       </div>
     </div>
   </a-card>
 </template>
-
-<script>
-export default {
-  name: 'ChartCard',
-  props: {
-    title: {
-      type: String,
-      default: ''
-    },
-    total: {
-      type: [Function, Number, String],
-      required: false,
-      default: null
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    }
-  }
-}
-</script>
 
 <style lang="less" scoped>
 @import '@/style/variables.less';

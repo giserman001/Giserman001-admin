@@ -1,3 +1,11 @@
+<script setup lang="ts" name="debounceDirect">
+import { message } from 'ant-design-vue'
+
+function debounceClick() {
+  message.success('我是防抖按钮触发的事件 🍍🍓🍌')
+}
+</script>
+
 <template>
   <a-card ly-h-full>
     <div ly-flex ly-flex-col ly-items-center>
@@ -6,13 +14,6 @@
     </div>
   </a-card>
 </template>
-
-<script setup lang="ts" name="debounceDirect">
-import { message } from "ant-design-vue";
-const debounceClick = () => {
-  message.success("我是防抖按钮触发的事件 🍍🍓🍌");
-};
-</script>
 
 <style scoped lang="less">
 </style>

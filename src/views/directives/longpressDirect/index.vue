@@ -1,3 +1,11 @@
+<script setup lang="ts" name="longpressDirect">
+import { message } from 'ant-design-vue'
+
+function longpress() {
+  message.success('长按事件触发成功 🎉🎉🎉')
+}
+</script>
+
 <template>
   <a-card ly-h-full>
     <div ly-flex ly-flex-col ly-items-center>
@@ -6,13 +14,6 @@
     </div>
   </a-card>
 </template>
-
-<script setup lang="ts" name="longpressDirect">
-import { message } from "ant-design-vue";
-const longpress = () => {
-  message.success("长按事件触发成功 🎉🎉🎉");
-};
-</script>
 
 <style scoped lang="less">
 </style>

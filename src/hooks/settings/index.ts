@@ -10,7 +10,7 @@ export function useGlobSetting(): Readonly<GlobConfig> {
   const glob: Readonly<GlobConfig> = {
     title: VITE_GLOB_APP_TITLE,
     baseUrl: VITE_GLOB_API_URL,
-    staticUrl: VITE_GLOB_STATIC_URL
+    staticUrl: VITE_GLOB_STATIC_URL,
   }
   return glob as Readonly<GlobConfig>
 }

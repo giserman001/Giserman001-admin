@@ -1,10 +1,9 @@
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-
 
 export function timeFix() {
   const time = new Date()
@@ -16,19 +15,19 @@ export function timeFix() {
 export const encryptKeys = {
   // key最少4位,否则报错
   key: '1111',
-  iv: '1'
+  iv: '1',
 }
 
-export const getQueryParameters = (options) => {
+export function getQueryParameters(options) {
   const url = options.url
   const search = url.split('?')[1]
   if (!search) {
     return {}
   }
-  return JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+  return JSON.parse(`{"${decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"')}"}`)
 }
 
-export const getBody = (options) => {
+export function getBody(options) {
   return options.body && JSON.parse(options.body)
 }
 
@@ -49,7 +48,7 @@ export function scorePassword(pass) {
     digits: /\d/.test(pass),
     lower: /[a-z]/.test(pass),
     upper: /[A-Z]/.test(pass),
-    nonWords: /\W/.test(pass)
+    nonWords: /\W/.test(pass),
   }
 
   let variationCount = 0
@@ -58,21 +57,21 @@ export function scorePassword(pass) {
   }
   score += (variationCount - 1) * 10
 
-  return parseInt(`${score}`)
+  return Number.parseInt(`${score}`)
 }
 
-export const firstLetterIsUpperCase = function (str) {
+export function firstLetterIsUpperCase(str) {
   const reg = /^[A-Z][A-z0-9]*$/
   return reg.test(str)
 }
 
 export const separator = ';'
 
-export const divisionStringToArray = (string, customSeparator) => {
+export function divisionStringToArray(string, customSeparator) {
   return string ? string.split(customSeparator || separator) : []
 }
 
-export const getWeek = (week: number, useZhou) => {
+export function getWeek(week: number, useZhou) {
   let txt = ''
   switch (week) {
     case 1:
@@ -99,15 +98,15 @@ export const getWeek = (week: number, useZhou) => {
     default:
       return 'getWeekError'
   }
-  return useZhou ? '周' : '星期' + txt
+  return useZhou ? '周' : `星期${txt}`
 }
 
-const sitUrl = 'xxxxx'
 export const isDev = import.meta.env.DEV
 export const baseURL = isDev ? '/' : '生产地址'
 
 export function toLocalTimeStr({ date, format = 'YYYY-MM-DD HH:mm:ss' }) {
-  if (!date) return null
+  if (!date)
+    return null
   return dayjs(date).format(format)
 }
 
@@ -130,7 +129,7 @@ export function delArrItem(arr, item) {
   arr.splice(index, 1)
 }
 
-export const useImageUrl = (name: string, type: string = 'png'): string => {
+export function useImageUrl(name: string, type: string = 'png'): string {
   /**
    * @method vite动态引入图片
    * @params folder 文件夹名称 name 文件名称 type 文件格式 一般为png/jpg/webp/gif等...
@@ -139,19 +138,20 @@ export const useImageUrl = (name: string, type: string = 'png'): string => {
   return new URL(`../assets/images/${name}.${type}`, import.meta.url).href
 }
 
-export const batchDispatch = (dispatch, arr) => {
+export function batchDispatch(dispatch, arr) {
   arr.forEach((item) => {
     dispatch(item)
   })
 }
 
-export const createFormData = (formDatas, file) => {
+export function createFormData(formDatas, file) {
   const formData = new FormData()
   if (file.length) {
-    file.map((item) => {
+    file.forEach((item) => {
       formData.append('file', item)
     })
-  } else {
+  }
+  else {
     formData.append('file', file)
   }
   for (const item in formDatas) {
@@ -165,7 +165,8 @@ export function deepDiffKeys(obj1, obj2) {
   const diffKeys = []
 
   function deepCompare(o1, o2, key) {
-    if (o1 === o2) return
+    if (o1 === o2)
+      return
     if (typeof o1 !== 'object' || o1 === null || typeof o2 !== 'object' || o2 === null) {
       diffKeys.push(key)
       return
@@ -173,15 +174,16 @@ export function deepDiffKeys(obj1, obj2) {
 
     for (const k in o1) {
       if (o2[k] === undefined) {
-        diffKeys.push(key + '.' + k)
-      } else {
-        deepCompare(o1[k], o2[k], key + '.' + k)
+        diffKeys.push(`${key}.${k}`)
+      }
+      else {
+        deepCompare(o1[k], o2[k], `${key}.${k}`)
       }
     }
 
     for (const k in o2) {
       if (o1[k] === undefined) {
-        diffKeys.push(key + '.' + k)
+        diffKeys.push(`${key}.${k}`)
       }
     }
   }

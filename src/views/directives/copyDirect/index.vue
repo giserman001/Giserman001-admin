@@ -1,3 +1,7 @@
+<script setup lang="ts" name="copyDirect">
+const data = ref<string>('我是被复制的内容 🍒 🍉 🍊')
+</script>
+
 <template>
   <a-card ly-h-full>
     <div ly-flex ly-flex-col ly-items-center>
@@ -10,9 +14,5 @@
     </div>
   </a-card>
 </template>
-
-<script setup lang="ts" name="copyDirect">
-const data = ref<string>("我是被复制的内容 🍒 🍉 🍊");
-</script>
 
 <style scoped lang="less"></style>

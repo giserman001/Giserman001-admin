@@ -1,5 +1,63 @@
+<script setup lang="ts">
+import { BgColorsOutlined, CheckCircleOutlined, CheckOutlined, CodepenOutlined, SettingOutlined } from '@ant-design/icons-vue'
+import { storeToRefs } from 'pinia'
+import { emitter, getColor } from './index'
+
+const globalStore = useGlobalStore()
+
+const { state } = storeToRefs(globalStore)
+
+const colorList = computed(() => getColor())
+
+// 打开主题设置
+const drawerVisible = ref(false)
+
+emitter.on('openThemeDrawer', () => {
+  drawerVisible.value = true
+})
+
+// 设置布局方式
+function setLayout(val: LayoutType) {
+  globalStore.setGlobalState('layout', val)
+}
+
+// function setAsideTheme(checked: boolean) {
+//   globalStore.setGlobalState('asideInverted', checked)
+// }
+
+// function setHeadTheme(checked: boolean) {
+//   globalStore.setGlobalState('headerInverted', checked)
+// }
+
+function changeColor(color: string) {
+  globalStore.setGlobalState('primary', color)
+}
+
+// 灰色和弱色切换
+function changeGreyOrWeak(type: GreyOrWeakType, value: boolean) {
+  const body = document.body as HTMLElement
+  if (!value)
+    return body.removeAttribute('style')
+  const styles: Record<GreyOrWeakType, string> = {
+    grey: 'filter: grayscale(1)',
+    weak: 'filter: invert(80%)',
+  }
+  body.setAttribute('style', styles[type])
+  const propName = type === 'grey' ? 'isWeak' : 'isGrey'
+  globalStore.setGlobalState(propName, false)
+}
+
+onMounted(() => {
+  // init 主题
+  if (state.value.isGrey)
+    changeGreyOrWeak('grey', true)
+  if (state.value.isWeak)
+    changeGreyOrWeak('weak', true)
+})
+</script>
+
 <template>
-  <a-drawer width="300" placement="right" title="布局设置" closable v-model:open="drawerVisible">
+  <a-drawer v-model:open="drawerVisible" width="300" placement="right" title="布局设置" closable>
     <div ly-flex ly-flex-col ly-gap="25px">
       <a-divider class="ly-m-0!">
         <CodepenOutlined /> 布局样式
@@ -10,63 +68,79 @@
             <template #title>
               <span>经典布局</span>
             </template>
-            <div ly-flex ly-flex-col ly-gap="[4px]" ly-w="110px" ly-h="80px"
+            <div
+              ly-gap="[4px]" ly-w="110px" ly-h="80px"
               :class="[state.layout === 'classic' ? 'ly-shadow-[0_0_0_2px_#409EFF]' : 'ly-shadow-[0_0_5px_1px_#d4d7de] hover:ly-shadow-[0_0_5px_1px_#909399]']"
-              ly-p="8px" ly-cursor-pointer ly-rounded="6px" ly-box-border ly-relative
-              ly-transition="all duration-[0.2s]" @click="setLayout('classic')">
-              <div ly-bg="#409EFF" ly-rounded="3px" ly-h="14px"></div>
+              ly-p="8px" ly-rounded="6px" ly-relative ly-box-border ly-flex ly-flex-col ly-cursor-pointer
+              ly-transition="all duration-[0.2s]" @click="setLayout('classic')"
+            >
+              <div ly-bg="#409EFF" ly-rounded="3px" ly-h="14px" />
               <div ly-flex ly-flex-1 ly-gap="[4px]">
-                <div ly-bg="#a0cfff" ly-rounded="3px" ly-w="15px"></div>
-                <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff"></div>
+                <div ly-bg="#a0cfff" ly-rounded="3px" ly-w="15px" />
+                <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
               </div>
-              <CheckCircleOutlined v-if="state.layout === 'classic'" ly-absolute ly-text="#409EFF"
-                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px" />
+              <CheckCircleOutlined
+                v-if="state.layout === 'classic'" ly-absolute ly-text="#409EFF"
+                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px"
+              />
             </div>
           </a-tooltip>
           <a-tooltip placement="top">
             <template #title>
               <span>纵向布局</span>
             </template>
-            <div ly-flex ly-gap="[4px]" ly-w="110px" ly-h="80px"
+            <div
+              ly-gap="[4px]" ly-w="110px" ly-h="80px"
               :class="[state.layout === 'vertical' ? 'ly-shadow-[0_0_0_2px_#409EFF]' : 'ly-shadow-[0_0_5px_1px_#d4d7de] hover:ly-shadow-[0_0_5px_1px_#909399]']"
-              ly-p="8px" ly-cursor-pointer ly-rounded="6px" ly-box-border ly-relative
-              ly-transition="all duration-[0.2s]" @click="setLayout('vertical')">
-              <div ly-bg="#409EFF" ly-rounded="3px" ly-w="15px"></div>
-              <div ly-flex ly-flex-col ly-flex-1 ly-gap="[4px]">
-                <div ly-bg="#a0cfff" ly-rounded="3px" ly-h="14px"></div>
-                <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff"></div>
+              ly-p="8px" ly-rounded="6px" ly-relative ly-box-border ly-flex ly-cursor-pointer
+              ly-transition="all duration-[0.2s]" @click="setLayout('vertical')"
+            >
+              <div ly-bg="#409EFF" ly-rounded="3px" ly-w="15px" />
+              <div ly-flex ly-flex-1 ly-flex-col ly-gap="[4px]">
+                <div ly-bg="#a0cfff" ly-rounded="3px" ly-h="14px" />
+                <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
               </div>
-              <CheckCircleOutlined v-if="state.layout === 'vertical'" ly-absolute ly-text="#409EFF"
-                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px" />
+              <CheckCircleOutlined
+                v-if="state.layout === 'vertical'" ly-absolute ly-text="#409EFF"
+                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px"
+              />
             </div>
           </a-tooltip>
           <a-tooltip placement="top">
             <template #title>
               <span>横向布局</span>
             </template>
-            <div ly-flex ly-flex-col ly-gap="[4px]" ly-w="110px" ly-h="80px"
+            <div
+              ly-gap="[4px]" ly-w="110px" ly-h="80px"
               :class="[state.layout === 'transverse' ? 'ly-shadow-[0_0_0_2px_#409EFF]' : 'ly-shadow-[0_0_5px_1px_#d4d7de] hover:ly-shadow-[0_0_5px_1px_#909399]']"
-              ly-p="8px" ly-cursor-pointer ly-rounded="6px" ly-box-border ly-relative
-              ly-transition="all duration-[0.2s]" @click="setLayout('transverse')">
-              <div ly-bg="#409EFF" ly-rounded="3px" ly-h="15px"></div>
-              <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff"></div>
-              <CheckCircleOutlined v-if="state.layout === 'transverse'" ly-absolute ly-text="#409EFF"
-                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px" />
+              ly-p="8px" ly-rounded="6px" ly-relative ly-box-border ly-flex ly-flex-col ly-cursor-pointer
+              ly-transition="all duration-[0.2s]" @click="setLayout('transverse')"
+            >
+              <div ly-bg="#409EFF" ly-rounded="3px" ly-h="15px" />
+              <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
+              <CheckCircleOutlined
+                v-if="state.layout === 'transverse'" ly-absolute ly-text="#409EFF"
+                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px"
+              />
             </div>
           </a-tooltip>
           <a-tooltip placement="top">
             <template #title>
               <span>分栏布局</span>
             </template>
-            <div ly-flex ly-gap="[4px]" ly-w="110px" ly-h="80px"
+            <div
+              ly-gap="[4px]" ly-w="110px" ly-h="80px"
               :class="[state.layout === 'columns' ? 'ly-shadow-[0_0_0_2px_#409EFF]' : 'ly-shadow-[0_0_5px_1px_#d4d7de] hover:ly-shadow-[0_0_5px_1px_#909399]']"
-              ly-p="8px" ly-cursor-pointer ly-rounded="6px" ly-box-border ly-relative
-              ly-transition="all duration-[0.2s]" @click="setLayout('columns')">
-              <div ly-bg="#409EFF" ly-rounded="3px" ly-w="14px"></div>
-              <div ly-bg="#a0cfff" ly-rounded="3px" ly-w="15px"></div>
-              <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff"></div>
-              <CheckCircleOutlined v-if="state.layout === 'columns'" ly-absolute ly-text="#409EFF"
-                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px" />
+              ly-p="8px" ly-rounded="6px" ly-relative ly-box-border ly-flex ly-cursor-pointer
+              ly-transition="all duration-[0.2s]" @click="setLayout('columns')"
+            >
+              <div ly-bg="#409EFF" ly-rounded="3px" ly-w="14px" />
+              <div ly-bg="#a0cfff" ly-rounded="3px" ly-w="15px" />
+              <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
+              <CheckCircleOutlined
+                v-if="state.layout === 'columns'" ly-absolute ly-text="#409EFF"
+                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px"
+              />
             </div>
           </a-tooltip>
         </div>
@@ -103,8 +177,10 @@
           <div ly-flex ly-items-center>
             <a-tooltip v-for="(item, index) in colorList" :key="index">
               <template #title>{{ item.key }}</template>
-              <a-tag :color="item.color" @click="changeColor(item.color)"
-                class="ly-w-[20px] ly-h-[20px] ly-flex ly-items-center ly-justify-center">
+              <a-tag
+                :color="item.color" class="ly-h-[20px] ly-w-[20px] ly-flex ly-items-center ly-justify-center"
+                @click="changeColor(item.color)"
+              >
                 <CheckOutlined v-if="item.color === state.primary" />
               </a-tag>
             </a-tooltip>
@@ -159,61 +235,5 @@
     </div>
   </a-drawer>
 </template>
-
-<script setup lang="ts">
-import { CodepenOutlined, CheckCircleOutlined, QuestionCircleOutlined, SettingOutlined, BgColorsOutlined, CheckOutlined } from '@ant-design/icons-vue'
-import { emitter, getColor } from "./index";
-import { storeToRefs } from "pinia";
-
-const globalStore = useGlobalStore();
-
-const { state } = storeToRefs(globalStore);
-
-const colorList = computed(() => getColor())
-
-// 打开主题设置
-const drawerVisible = ref(false);
-
-emitter.on("openThemeDrawer", () => {
-  drawerVisible.value = true
-});
-
-// 设置布局方式
-const setLayout = (val: LayoutType) => {
-  globalStore.setGlobalState("layout", val);
-};
-
-function setAsideTheme(checked: boolean) {
-  globalStore.setGlobalState('asideInverted', checked)
-}
-
-function setHeadTheme(checked: boolean) {
-  globalStore.setGlobalState('headerInverted', checked)
-}
-
-const changeColor = (color: string) => {
-  globalStore.setGlobalState('primary', color)
-}
-
-// 灰色和弱色切换
-const changeGreyOrWeak = (type: GreyOrWeakType, value: boolean) => {
-  const body = document.body as HTMLElement;
-  if (!value) return body.removeAttribute("style");
-  const styles: Record<GreyOrWeakType, string> = {
-    grey: "filter: grayscale(1)",
-    weak: "filter: invert(80%)"
-  };
-  body.setAttribute("style", styles[type]);
-  const propName = type === "grey" ? "isWeak" : "isGrey";
-  globalStore.setGlobalState(propName, false);
-};
-
-onMounted(() => {
-  // init 主题
-  if (state.value.isGrey) changeGreyOrWeak("grey", true);
-  if (state.value.isWeak) changeGreyOrWeak("weak", true);
-})
-
-</script>
 
 <style lang="less" scoped></style>

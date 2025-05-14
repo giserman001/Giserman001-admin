@@ -1,11 +1,3 @@
-<template>
-  <div class="antv-chart-mini" style="margin-top: 10px">
-    <div class="chart-wrapper">
-      <div :id="id"></div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup name="MiniSmoothArea">
 import { Area } from '@antv/g2plot'
 
@@ -19,17 +11,25 @@ onMounted(() => {
     yAxis: false,
     xAxis: {
       range: [0, 1],
-      label: null
+      label: null,
     },
     height: 60,
     areaStyle: {
       fill: '#74BCFF',
-      fillOpacity: 0.9
+      fillOpacity: 0.9,
     },
-    padding: [5, 0, 0, 0]
+    padding: [5, 0, 0, 0],
   })
   area.render()
 })
 </script>
+
+<template>
+  <div class="antv-chart-mini" style="margin-top: 10px">
+    <div class="chart-wrapper">
+      <div :id="id" />
+    </div>
+  </div>
+</template>
 
 <style lang="less" scoped></style>

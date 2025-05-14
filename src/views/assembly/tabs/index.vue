@@ -1,3 +1,19 @@
+<script setup lang="ts" name="tabs">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// 打开详情页
+function handleToParamsDetail(id: string) {
+  router.push(`/assembly/tabs/detail/${id}`)
+}
+
+// 打开详情页
+function handleToQueryDetail(id: string) {
+  router.push({ path: `/assembly/tabs/detail1`, query: { id } })
+}
+</script>
+
 <template>
   <a-card ly-h-full>
     <div ly-flex ly-flex-col ly-items-center>
@@ -9,18 +25,3 @@
     </div>
   </a-card>
 </template>
-
-<script setup lang="ts" name="tabs">
-import { useRouter } from "vue-router"
-const router = useRouter();
-
-// 打开详情页
-const handleToParamsDetail = (id: string) => {
-  router.push(`/assembly/tabs/detail/${id}`);
-};
-
-// 打开详情页
-const handleToQueryDetail = (id: string) => {
-  router.push({path: `/assembly/tabs/detail1`, query: { id }});
-};
-</script>

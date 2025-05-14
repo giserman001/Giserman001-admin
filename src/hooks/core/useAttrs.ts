@@ -20,7 +20,8 @@ export function entries<T>(obj: Recordable<T>): [string, T][] {
 
 export function useCurrentInstanceAttrs(params: Params = {}): Ref<Recordable> | object {
   const instance = getCurrentInstance()
-  if (!instance) return {}
+  if (!instance)
+    return {}
 
   const { excludeListeners = false, excludeKeys = [], excludeDefaultKeys = true } = params
   const attrs = shallowRef({})
@@ -31,7 +32,8 @@ export function useCurrentInstanceAttrs(params: Params = {}): Ref<Recordable> | 
 
   watchEffect(() => {
     const res = entries(instance.attrs).reduce((acm, [key, val]) => {
-      if (!allExcludeKeys.includes(key) && !(excludeListeners && LISTENER_PREFIX.test(key))) acm[key] = val
+      if (!allExcludeKeys.includes(key) && !(excludeListeners && LISTENER_PREFIX.test(key)))
+        acm[key] = val
 
       return acm
     }, {} as Recordable)

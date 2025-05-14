@@ -1,3 +1,59 @@
+<script lang="ts" setup name="VColorInput">
+import type { ColorAttrs, ColorInput } from '../color'
+import { Color } from '../color'
+
+const props = defineProps({
+  color: {
+    type: [String, Object] as PropType<ColorInput>,
+    default: '#000000',
+  },
+})
+
+const emit = defineEmits(['update:color', 'change'])
+
+const formatList = ['hex', 'hsl', 'rgb', 'hsv']
+
+const colorClass = new Color()
+
+const currentFormat = ref(formatList[0])
+const currentColor = ref<ColorAttrs>(colorClass.parseColor(props.color))
+
+// function onChangeFormat() {
+//   const index = ArrayUtils.findIndex(formatList, (val: string) => val == currentFormat.value)
+
+//   currentFormat.value = formatList[(index + 1) % formatList.length]
+// }
+
+watch(
+  () => props.color,
+  (newVal: ColorInput) => {
+    currentColor.value = colorClass.parseColor(toRaw(newVal))
+  },
+)
+
+function doOnChange(data: any, oldHue?: number): void {
+  currentColor.value = colorClass.parseColor(data, oldHue)
+  emit('update:color', currentColor.value)
+  emit('change', currentColor.value)
+}
+
+function onInputChange(source: string) {
+  switch (source) {
+    case 'hex':
+      doOnChange({ hex: currentColor.value.hex, source: 'hex' })
+      break
+    case 'hsl':
+      doOnChange({ hsl: currentColor.value.hsl, source: 'hsl' })
+      break
+    case 'rgb':
+      doOnChange({ rgb: currentColor.value.rgb, source: 'rgb' })
+      break
+    case 'hsv':
+      doOnChange({ hsv: currentColor.value.hsv, source: 'hsv' })
+  }
+}
+</script>
+
 <template>
   <div class="inputs-controls">
     <!-- <button class="formatBtn" @click="onChangeFormat"> -->
@@ -81,66 +137,11 @@
         placeholder="b"
       />
     </div> -->
-    <div class="format-group" v-if="currentFormat === 'hex'">
-      <input v-model="currentColor.hex" type="text" maxlength="7" placeholder="hex" @blur="onInputChange('hex')" />
+    <div v-if="currentFormat === 'hex'" class="format-group">
+      <input v-model="currentColor.hex" type="text" maxlength="7" placeholder="hex" @blur="onInputChange('hex')">
     </div>
   </div>
 </template>
-
-<script lang="ts" setup name="VColorInput">
-import { Color, ColorAttrs, ColorInput } from '../color'
-import { ArrayUtils } from '@aesoper/normal-utils'
-
-const formatList = ['hex', 'hsl', 'rgb', 'hsv']
-
-const props = defineProps({
-  color: {
-    type: [String, Object] as PropType<ColorInput>,
-    default: '#000000'
-  }
-})
-const emit = defineEmits(['update:color', 'change'])
-
-const colorClass = new Color()
-
-const currentFormat = ref(formatList[0])
-const currentColor = ref<ColorAttrs>(colorClass.parseColor(props.color))
-
-const onChangeFormat = () => {
-  const index = ArrayUtils.findIndex(formatList, (val: string) => val == currentFormat.value)
-
-  currentFormat.value = formatList[(index + 1) % formatList.length]
-}
-
-watch(
-  () => props.color,
-  (newVal: ColorInput) => {
-    currentColor.value = colorClass.parseColor(toRaw(newVal))
-  }
-)
-
-const doOnChange = (data: any, oldHue?: number): void => {
-  currentColor.value = colorClass.parseColor(data, oldHue)
-  emit('update:color', currentColor.value)
-  emit('change', currentColor.value)
-}
-
-const onInputChange = (source: string) => {
-  switch (source) {
-    case 'hex':
-      doOnChange({ hex: currentColor.value.hex, source: 'hex' })
-      break
-    case 'hsl':
-      doOnChange({ hsl: currentColor.value.hsl, source: 'hsl' })
-      break
-    case 'rgb':
-      doOnChange({ rgb: currentColor.value.rgb, source: 'rgb' })
-      break
-    case 'hsv':
-      doOnChange({ hsv: currentColor.value.hsv, source: 'hsv' })
-  }
-}
-</script>
 
 <style lang="less" scoped>
 .inputs-controls {

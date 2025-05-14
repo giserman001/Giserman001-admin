@@ -1,11 +1,10 @@
+import type { KeepAliveState } from '@/store/interface'
 import { defineStore } from 'pinia'
-import { KeepAliveState } from '@/store/interface'
 
 const storeId = 'keepAlive'
 export const useKeepAliveStore = defineStore(storeId, () => {
-
   const state = reactive<KeepAliveState>({
-    keepAliveName: []
+    keepAliveName: [],
   })
 
   async function addKeepAliveName(name: string) {
@@ -13,7 +12,7 @@ export const useKeepAliveStore = defineStore(storeId, () => {
   }
   // Remove KeepAliveName
   async function removeKeepAliveName(name: string) {
-    state.keepAliveName = state.keepAliveName.filter((item) => item !== name)
+    state.keepAliveName = state.keepAliveName.filter(item => item !== name)
   }
   // Set KeepAliveName
   async function setKeepAliveName(keepAliveName: string[] = []) {
@@ -23,6 +22,6 @@ export const useKeepAliveStore = defineStore(storeId, () => {
     state,
     addKeepAliveName,
     removeKeepAliveName,
-    setKeepAliveName
+    setKeepAliveName,
   }
 })

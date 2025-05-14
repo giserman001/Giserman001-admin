@@ -1,12 +1,12 @@
 import type { EChartsOption } from 'echarts'
 import type { Ref } from 'vue'
+import { tryOnUnmounted, useDebounceFn } from '@vueuse/core'
+import { computed, nextTick, ref, unref } from 'vue'
 import { useTimeoutFnLoc } from '@/hooks/core/useTimeout'
 import { useBreakpoint } from '@/hooks/event/useBreakpoint'
 import { useEventListenerLoc } from '@/hooks/event/useEventListener'
 import { isInsideHiddenElement } from '@/utils/domUtils'
 import echarts from '@/utils/libs/echarts'
-import { tryOnUnmounted, useDebounceFn } from '@vueuse/core'
-import { computed, nextTick, ref, unref } from 'vue'
 
 export function getLinearGradient([color1, color2]: string[], direction: 'up' | 'down' | 'left' | 'right' = 'down') {
   return new echarts.graphic.LinearGradient(

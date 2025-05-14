@@ -1,22 +1,22 @@
-import './index.less'
-import { Menu, Dropdown } from 'ant-design-vue'
 import { GlobalOutlined } from '@ant-design/icons-vue'
-import ls from '@/utils/Storage'
-import { setDocumentTitleForLangChange } from '@/utils/domUtil'
+import { Dropdown, Menu } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
+import { setDocumentTitleForLangChange } from '@/utils/domUtil'
+import ls from '@/utils/Storage'
+import './index.less'
 
-const locales = ['zh-CN', /*'zh-TW',*/ 'en-US' /*'pt-BR'*/]
+const locales = ['zh-CN', /* 'zh-TW', */ 'en-US']
 const languageLabels = {
   'zh-CN': '简体中文',
   // 'zh-TW': '繁体中文',
-  'en-US': 'English'
+  'en-US': 'English',
   // 'pt-BR': 'Português'
 }
-// eslint-disable-next-line
+
 const languageIcons: any = {
   'zh-CN': '🇨🇳',
   // 'zh-TW': '🇭🇰',
-  'en-US': '🇺🇸'
+  'en-US': '🇺🇸',
   // 'pt-BR': '🇧🇷'
 }
 
@@ -24,8 +24,8 @@ const SelectLang = {
   props: {
     prefixCls: {
       type: String,
-      default: 'ant-pro-drop-down'
-    }
+      default: 'ant-pro-drop-down',
+    },
   },
   name: 'SelectLang',
   setup(props) {
@@ -43,7 +43,7 @@ const SelectLang = {
     return {
       prefixCls,
       changeLang,
-      currentLang
+      currentLang,
     }
   },
   render() {
@@ -56,10 +56,10 @@ const SelectLang = {
           return triggerNode.parentNode || document.body
         }}
       >
-        {locales.map((locale) => (
+        {locales.map(locale => (
           <Menu.Item key={locale}>
             <span role="img" aria-label={languageLabels[locale]}>
-              {languageIcons[locale] + ' '}
+              {`${languageIcons[locale]} `}
             </span>
             {languageLabels[locale]}
           </Menu.Item>
@@ -73,7 +73,7 @@ const SelectLang = {
         </span>
       </Dropdown>
     )
-  }
+  },
 }
 
 export default defineComponent(SelectLang)

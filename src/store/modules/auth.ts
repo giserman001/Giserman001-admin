@@ -1,19 +1,18 @@
-import { defineStore } from "pinia";
-import { AuthState } from "@/store/interface";
-import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
-import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList } from "@/utils";
+import type { AuthState } from '@/store/interface'
+import { defineStore } from 'pinia'
+import { getAuthButtonListApi, getAuthMenuListApi } from '@/api/modules/login'
+import { getAllBreadcrumbList, getFlatMenuList, getShowMenuList } from '@/utils'
 
 const storeId = 'auth'
 
 export const useAuthStore = defineStore(storeId, () => {
-
   const state = reactive<AuthState>({
     // 按钮权限列表
     authButtonList: {},
     // 菜单权限列表
     authMenuList: [],
     // 当前页面的 router name，用来做按钮权限筛选
-    routeName: ""
+    routeName: '',
   })
 
   // 按钮权限列表
@@ -33,19 +32,19 @@ export const useAuthStore = defineStore(storeId, () => {
 
   // Get AuthButtonList
   async function getAuthButtonList() {
-    const { data } = await getAuthButtonListApi();
-    state.authButtonList = data;
+    const { data } = await getAuthButtonListApi()
+    state.authButtonList = data
   }
 
   // Get AuthMenuList
   async function getAuthMenuList() {
-    const { data } = await getAuthMenuListApi();
-    state.authMenuList = data;
+    const { data } = await getAuthMenuListApi()
+    state.authMenuList = data
   }
 
   // Set RouteName
   async function setRouteName(name: string) {
-    state.routeName = name;
+    state.routeName = name
   }
 
   return {
@@ -57,6 +56,6 @@ export const useAuthStore = defineStore(storeId, () => {
     breadcrumbListGet,
     getAuthButtonList,
     getAuthMenuList,
-    setRouteName
+    setRouteName,
   }
-});
+})

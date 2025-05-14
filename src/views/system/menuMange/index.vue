@@ -1,23 +1,3 @@
-<template>
-  <div class="table-box">
-    <!-- <ProTable ref="proTable" title="菜单列表" row-key="path" :indent="20" :columns="columns" :data="menuData">
-      <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus">新增菜单 </el-button>
-      </template>
-      <template #icon="scope">
-        <el-icon :size="18">
-          <component :is="scope.row.meta.icon"></component>
-        </el-icon>
-      </template>
-      <template #operation>
-        <el-button type="primary" link :icon="EditPen"> 编辑 </el-button>
-        <el-button type="primary" link :icon="Delete"> 删除 </el-button>
-      </template>
-    </ProTable> -->
-    <span class="text"> 菜单管理（待完善） 🍓🍇🍈🍉</span>
-  </div>
-</template>
-
 <script setup lang="ts" name="menuMange">
 // import { ColumnProps } from "@/components/ProTable/interface";
 // import { Delete, EditPen, CirclePlus } from "@element-plus/icons-vue";
@@ -38,3 +18,23 @@
 //   { prop: "operation", label: "操作", width: 250, fixed: "right" }
 // ];
 </script>
+
+<template>
+  <div class="table-box">
+    <!-- <ProTable ref="proTable" title="菜单列表" row-key="path" :indent="20" :columns="columns" :data="menuData">
+      <template #tableHeader>
+        <el-button type="primary" :icon="CirclePlus">新增菜单 </el-button>
+      </template>
+      <template #icon="scope">
+        <el-icon :size="18">
+          <component :is="scope.row.meta.icon"></component>
+        </el-icon>
+      </template>
+      <template #operation>
+        <el-button type="primary" link :icon="EditPen"> 编辑 </el-button>
+        <el-button type="primary" link :icon="Delete"> 删除 </el-button>
+      </template>
+    </ProTable> -->
+    <span class="text"> 菜单管理（待完善） 🍓🍇🍈🍉</span>
+  </div>
+</template>

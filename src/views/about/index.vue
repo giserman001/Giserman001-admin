@@ -1,3 +1,9 @@
+<script setup lang="ts" name="about">
+const { pkg, lastBuildTime } = __APP_INFO__
+const { dependencies, devDependencies, version } = pkg
+console.log(dependencies, devDependencies, version)
+</script>
+
 <template>
   <div ly-flex="~ col" ly-gap="[15px]">
     <a-card title="简介" hoverable>
@@ -48,12 +54,6 @@
     </a-card>
   </div>
 </template>
-
-<script setup lang="ts" name="about">
-const { pkg, lastBuildTime } = __APP_INFO__;
-const { dependencies, devDependencies, version } = pkg;
-console.log(dependencies, devDependencies, version)
-</script>
 
 <style lang="less" scoped>
 

@@ -1,4 +1,4 @@
-//去除谷歌浏览器的scroll、wheel等事件警告
+// 去除谷歌浏览器的scroll、wheel等事件警告
 // [Violation] Added non-passive event listener to a scroll-blocking
 // @ts-nocheck
 ;(function () {

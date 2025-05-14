@@ -1,5 +1,5 @@
+import type { GlobalState } from '@/store/interface'
 import { defineStore } from 'pinia'
-import { GlobalState } from '@/store/interface'
 import piniaPersistConfig from '@/store/helper/persist'
 
 const storeId = 'global'
@@ -44,7 +44,7 @@ export const useGlobalStore = defineStore(storeId, () => {
     // 页脚
     footer: true,
     // 是否锁屏
-    lockScreen: false
+    lockScreen: false,
   })
 
   function setGlobalState(...args: ObjToKeyValArray<GlobalState>) {
@@ -63,8 +63,8 @@ export const useGlobalStore = defineStore(storeId, () => {
   return {
     state,
     setGlobalState,
-    lockScreen
+    lockScreen,
   }
 }, {
-  persist: piniaPersistConfig(storeId)
+  persist: piniaPersistConfig(storeId),
 })

@@ -1,36 +1,36 @@
-import * as echarts from "echarts/core";
-import { BarChart, LineChart, LinesChart, PieChart, ScatterChart, RadarChart, GaugeChart } from "echarts/charts";
-import {
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  DatasetComponent,
-  TransformComponent,
-  LegendComponent,
-  PolarComponent,
-  GeoComponent,
-  ToolboxComponent,
-  DataZoomComponent
-} from "echarts/components";
-import { LabelLayout, UniversalTransition } from "echarts/features";
-import { CanvasRenderer } from "echarts/renderers";
 import type {
   BarSeriesOption,
+  GaugeSeriesOption,
   LineSeriesOption,
   LinesSeriesOption,
   PieSeriesOption,
-  ScatterSeriesOption,
   RadarSeriesOption,
-  GaugeSeriesOption
-} from "echarts/charts";
+  ScatterSeriesOption,
+} from 'echarts/charts'
 import type {
+  DatasetComponentOption,
+  GridComponentOption,
   TitleComponentOption,
   TooltipComponentOption,
-  GridComponentOption,
-  DatasetComponentOption
-} from "echarts/components";
-import type { ComposeOption } from "echarts/core";
-import "echarts-liquidfill";
+} from 'echarts/components'
+import type { ComposeOption } from 'echarts/core'
+import { BarChart, GaugeChart, LineChart, LinesChart, PieChart, RadarChart, ScatterChart } from 'echarts/charts'
+import {
+  DatasetComponent,
+  DataZoomComponent,
+  GeoComponent,
+  GridComponent,
+  LegendComponent,
+  PolarComponent,
+  TitleComponent,
+  ToolboxComponent,
+  TooltipComponent,
+  TransformComponent,
+} from 'echarts/components'
+import * as echarts from 'echarts/core'
+import { LabelLayout, UniversalTransition } from 'echarts/features'
+import { CanvasRenderer } from 'echarts/renderers'
+import 'echarts-liquidfill'
 
 export type ECOption = ComposeOption<
   | BarSeriesOption
@@ -44,7 +44,7 @@ export type ECOption = ComposeOption<
   | GridComponentOption
   | DatasetComponentOption
   | ScatterSeriesOption
->;
+>
 
 echarts.use([
   TitleComponent,
@@ -66,7 +66,7 @@ echarts.use([
   GaugeChart,
   LabelLayout,
   UniversalTransition,
-  CanvasRenderer
-]);
+  CanvasRenderer,
+])
 
-export default echarts;
+export default echarts

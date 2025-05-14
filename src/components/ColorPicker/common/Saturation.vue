@@ -1,73 +1,48 @@
-<template>
-  <div
-    class="bee-saturation"
-    :class="{
-      'bee-saturation__chrome': round,
-      'bee-saturation__hidden': hidden
-    }"
-    :style="{ backgroundColor: background }"
-  >
-    <div class="bee-saturation__white"></div>
-    <div class="bee-saturation__black"></div>
-    <div
-      class="bee-saturation__cursor"
-      :style="{
-        top: cursorTop + 'px',
-        left: cursorLeft + 'px'
-      }"
-      @click="handleDrag"
-    >
-      <div></div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup name="Saturation">
 import { DOMUtils } from '@aesoper/normal-utils'
 
-const clamp = (value: number, min: number, max: number) => {
-  return min < max ? (value < min ? min : value > max ? max : value) : value < max ? max : value > min ? min : value
-}
 const props = defineProps({
   hue: {
     type: Number,
     default: 0,
     validator: (value: number) => {
       return value >= 0 && value <= 360
-    }
+    },
   },
   saturation: {
     type: Number,
     default: 0,
     validator: (value: number) => {
       return value >= 0 && value <= 1
-    }
+    },
   },
   value: {
     type: Number,
     default: 0,
     validator: (value: number) => {
       return value >= 0 && value <= 1
-    }
+    },
   },
   round: Boolean,
-  hidden: Boolean
+  hidden: Boolean,
 })
-
 const emit = defineEmits(['update:saturation', 'update:value', 'change'])
+function clamp(value: number, min: number, max: number) {
+  return min < max ? (value < min ? min : value > max ? max : value) : value < max ? max : value > min ? min : value
+}
 // instance
 const instance = getCurrentInstance()
 // data
 const cursorTop = ref(0)
 const cursorLeft = ref(0)
-const background = ref('hsl(' + props.hue + ', 100%, 50%)')
+const background = ref(`hsl(${props.hue}, 100%, 50%)`)
 const currentHsv = reactive({
   h: props.hue,
   s: props.saturation,
-  v: props.value
+  v: props.value,
 })
 
-const updatePosition = () => {
+function updatePosition() {
   if (instance) {
     const el = instance.vnode.el
     cursorLeft.value = currentHsv.s * el?.clientWidth
@@ -75,7 +50,7 @@ const updatePosition = () => {
   }
 }
 
-const handleDrag = (event: MouseEvent) => {
+function handleDrag(event: MouseEvent) {
   if (instance) {
     const el = instance.vnode.el
     const rect = el?.getBoundingClientRect()
@@ -109,7 +84,7 @@ onMounted(() => {
       },
       end: (event) => {
         handleDrag(event as MouseEvent)
-      }
+      },
     })
 
     updatePosition()
@@ -121,8 +96,8 @@ watch(
   () => props.hue,
   (hue: number) => {
     currentHsv.h = hue
-    background.value = 'hsl(' + Math.round(currentHsv.h) + ', 100%, 50%)'
-  }
+    background.value = `hsl(${Math.round(currentHsv.h)}, 100%, 50%)`
+  },
 )
 
 watch(
@@ -130,7 +105,7 @@ watch(
   (value: number) => {
     currentHsv.v = value
     updatePosition()
-  }
+  },
 )
 
 watch(
@@ -138,9 +113,33 @@ watch(
   (saturation: number) => {
     currentHsv.s = saturation
     updatePosition()
-  }
+  },
 )
 </script>
+
+<template>
+  <div
+    class="bee-saturation"
+    :class="{
+      'bee-saturation__chrome': round,
+      'bee-saturation__hidden': hidden,
+    }"
+    :style="{ backgroundColor: background }"
+  >
+    <div class="bee-saturation__white" />
+    <div class="bee-saturation__black" />
+    <div
+      class="bee-saturation__cursor"
+      :style="{
+        top: `${cursorTop}px`,
+        left: `${cursorLeft}px`,
+      }"
+      @click="handleDrag"
+    >
+      <div />
+    </div>
+  </div>
+</template>
 
 <style lang="less" scoped>
 .bee-saturation {

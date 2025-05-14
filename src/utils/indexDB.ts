@@ -6,10 +6,10 @@ let inited = false
 const DBOpenRequest = indexedDB.open(dbName, version)
 let db = {}
 
-const initDB = () => {
+function initDB() {
   if (!inited) {
-    return new Promise((resolve, reject) => {
-      DBOpenRequest.onsuccess = (event) => {
+    return new Promise((resolve) => {
+      DBOpenRequest.onsuccess = () => {
         db = DBOpenRequest.result
         inited = true
         resolve(true)
@@ -19,59 +19,61 @@ const initDB = () => {
         console.log('onupgradeneeded')
         const db = event.target.result
 
-        db.onerror = function (event) {
+        db.onerror = function () {
           throw new Error(`[EasyDB]: Open DB Error`)
         }
 
         const objectStore = db.createObjectStore(dbName, {
           keyPath: 'key',
-          autoIncrement: false
+          autoIncrement: false,
         })
         objectStore.createIndex('key', 'key')
         objectStore.createIndex('value', 'value')
       }
     })
-  } else {
+  }
+  else {
     return Promise.resolve(true)
   }
 }
 
-const transaction = async () => {
+async function transaction() {
   await initDB()
   return db.transaction(dbName, 'readwrite').objectStore(dbName)
 }
 
-const set = async (key, value) => {
+async function set(key, value) {
   const val = await get(key)
   if (!val) {
     return await _add(key, value)
-  } else {
+  }
+  else {
     return await _put(key, value)
   }
 }
 
-const get = (key) => {
+function get(key) {
   return operateDataBase('get', key)
 }
 
-const _put = (key, value) => {
+function _put(key, value) {
   return operateDataBase('put', key, value)
 }
 
-const _add = (key, value) => {
+function _add(key, value) {
   return operateDataBase('add', key, value)
 }
 
-const remove = (key) => {
+function remove(key) {
   return operateDataBase('delete', key)
 }
 
-const clear = () => {
+function clear() {
   return operateDataBase('clear')
 }
 
-const readAll = () => {
-  return new Promise((resolve, reject) => {
+function readAll() {
+  return new Promise((resolve) => {
     const t = transaction()
     const data = []
     t.openCursor().onsuccess = function (event) {
@@ -79,14 +81,15 @@ const readAll = () => {
       if (cursor) {
         data.push(cursor.value)
         cursor.continue()
-      } else {
+      }
+      else {
         resolve(data)
       }
     }
   })
 }
 
-const dbCallback = (t, cb, type) => {
+function dbCallback(t, cb, type) {
   t.onsuccess = (event) => {
     ;['clear', 'delete'].includes(type) ? cb(true) : cb(event.target.result)
   }
@@ -95,9 +98,9 @@ const dbCallback = (t, cb, type) => {
   }
 }
 
-const operateDataBase = (type, key, value) => {
+function operateDataBase(type, key, value) {
   const data = key && value !== undefined ? { key, value } : key
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     transaction().then((res) => {
       const tran = res[type](data)
       dbCallback(
@@ -105,7 +108,7 @@ const operateDataBase = (type, key, value) => {
         (res) => {
           resolve(res)
         },
-        type
+        type,
       )
     })
   })
@@ -118,5 +121,5 @@ export default {
   get,
   remove,
   readAll,
-  clear
+  clear,
 }

@@ -1,64 +1,65 @@
-<template>
-  <div class="chart-trend">
-    <span class="term" style="color: rgba(0, 0, 0, 0.65)">
-      <slot name="term"></slot>
-    </span>
-    <span style="display: inline-block; margin-left: 8px; color: rgba(0, 0, 0, 0.85)" class="rate">{{ rate }}%</span>
-    <span :class="['trend-icon', trend]">
-      <caret-up-outlined v-if="trend === 'up'" />
-      <caret-down-outlined v-else />
-    </span>
-  </div>
-</template>
-
 <script>
-import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons-vue'
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons-vue'
+
 export default {
   name: 'Trend',
   components: {
     CaretUpOutlined,
-    CaretDownOutlined
+    CaretDownOutlined,
   },
   props: {
     term: {
       type: String,
       default: '',
-      required: false
+      required: false,
     },
     percentage: {
       type: Number,
-      default: null
+      default: null,
     },
     type: {
       type: Boolean,
-      default: false
+      default: false,
     },
     target: {
       type: Number,
-      default: 0
+      default: 0,
     },
     value: {
       type: Number,
-      default: 0
+      default: 0,
     },
     fixed: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
       trend: (this.type && 'up') || 'down',
-      rate: this.percentage
+      rate: this.percentage,
     }
   },
   created() {
     const type = this.type === null ? this.value >= this.target : this.type
     this.trend = type ? 'up' : 'down'
     this.rate = (this.percentage === null ? (Math.abs(this.value - this.target) * 100) / this.target : this.percentage).toFixed(this.fixed)
-  }
+  },
 }
 </script>
+
+<template>
+  <div class="chart-trend">
+    <span class="term" style="color: rgba(0, 0, 0, 0.65)">
+      <slot name="term" />
+    </span>
+    <span style="display: inline-block; margin-left: 8px; color: rgba(0, 0, 0, 0.85)" class="rate">{{ rate }}%</span>
+    <span class="trend-icon" :class="[trend]">
+      <CaretUpOutlined v-if="trend === 'up'" />
+      <CaretDownOutlined v-else />
+    </span>
+  </div>
+</template>
 
 <style lang="less" scoped>
 @import '@/style/variables.less';
