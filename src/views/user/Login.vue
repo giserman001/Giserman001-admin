@@ -23,8 +23,6 @@ const keepAliveStore = useKeepAliveStore()
 
 const customActiveKey = ref<string>('tab1')
 
-const a = 1
-
 const useForm = Form.useForm
 
 const state = reactive({
