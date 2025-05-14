@@ -1,4 +1,46 @@
 {
+  "compilerOptions": {
+    "target": "esnext",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    // "composite": true,
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "#/*": [
+        "types/*"
+      ]
+    },
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./node_modules/@types/",
+      "./types"
+    ],
+    "types": [
+      // "vite/client",
+      "node"
+    ],
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "name": "@vuedx/typescript-plugin-vue"
+      }
+    ]
+  },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
@@ -18,48 +60,6 @@
     "*.mjs"
   ],
   "vueCompilerOptions": {
-    "target": 3,
-  },
-  "compilerOptions": {
-    "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "target": "esnext",
-    "module": "esnext",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-    "resolveJsonModule": true,
-    "types": [
-      // "vite/client",
-      "node"
-    ],
-    "strict": false,
-    "noUnusedLocals": false,
-    "noImplicitReturns": false,
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "noImplicitAny": false,
-    "plugins": [
-      {
-        "name": "@vuedx/typescript-plugin-vue"
-      }
-    ],
-    // "composite": true,
-    "baseUrl": ".",
-    "typeRoots": [
-      "./node_modules/@types/",
-      "./types"
-    ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "#/*": [
-        "types/*"
-      ]
-    }
-  },
+    "target": 3
+  }
 }
