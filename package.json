@@ -18,7 +18,8 @@
     "report": "cross-env npm_lifecycle_event=report vite build",
     "pushall": "git push && git push origin-github",
     "lint:lint-staged": "lint-staged",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commit": "git add . && commit"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",
