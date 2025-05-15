@@ -10,10 +10,6 @@
       "section": "🐛 Bug Fixes | Bug 修复"
     },
     {
-      "type": "init",
-      "section": "🎉 Init | 初始化"
-    },
-    {
       "type": "docs",
       "section": "✏️ Documentation | 文档"
     },

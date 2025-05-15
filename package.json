@@ -19,8 +19,11 @@
     "prepare": "husky",
     "lint:lint-staged": "lint-staged",
     "commit": "git add . && git-cz",
+    "pre-release": "commit-and-tag-version --no-verify -a --prerelease",
+    "pre-release-name": "commit-and-tag-version --no-verify -a --prerelease alpha",
     "release": "commit-and-tag-version --no-verify -a",
-    "pushall": "git push && git push origin-github"
+    "release-as": "commit-and-tag-version --no-verify -a --release-as 1.1.0",
+    "push:all": "git push --follow-tags && git push --follow-tags origin-github"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",
