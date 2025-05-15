@@ -1,4 +1,11 @@
 # 更新日志
+## [4.2.0](https://gitee.com/giserman001/giserman001-admin/compare/v4.1.0...v4.2.0) (2025-05-15)
+
+
+### ✨ Features | 新功能
+
+* add commit-and-tag-version ([a229aed](https://gitee.com/giserman001/giserman001-admin/commit/a229aedb391c8837f513066a33c81182dea2b9e5))
+
 ## [4.1.0](https://gitee.com/giserman001/giserman001-admin/compare/v4.0.0...v4.1.0) (2025-05-15)
 
 
