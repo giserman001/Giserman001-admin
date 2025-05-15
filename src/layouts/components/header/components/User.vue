@@ -8,6 +8,8 @@ const router = useRouter()
 
 const userStore = useUserStore()
 
+const globalStore = useGlobalStore()
+
 const userInfo = computed(() => userStore.state.userInfo)
 
 const menus = ref([{
@@ -41,7 +43,7 @@ function handleLogout() {
 }
 
 function onLockScreen() {
-  systemConfig.commit('SET_LOCK_SCREEN', true)
+  globalStore.lockScreen(true)
 }
 
 function clickMenu(menu) {

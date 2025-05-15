@@ -9,6 +9,7 @@ import { getWeek } from '@/utils/util'
 import 'dayjs/locale/zh-cn'
 
 const userStore = useUserStore()
+
 const globalStore = useGlobalStore()
 
 const userInfo = computed(() => userStore.state.userInfo)
@@ -75,6 +76,7 @@ const isWrongPwd = ref(false)
 const afterUnlock = ref()
 
 function onUnlockScreen() {
+  globalStore.lockScreen(false)
   // api.userLogin({ username: userInfo.value.name, password: password.value }).then((res: any) => {
   //   if (!password.value) {
   //     isWrongPwd.value = true
