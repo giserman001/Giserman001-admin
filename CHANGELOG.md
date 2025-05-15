@@ -1,4 +1,11 @@
 # 更新日志
+## [4.1.0](https://gitee.com/giserman001/giserman001-admin/compare/v4.0.0...v4.1.0) (2025-05-15)
+
+
+### ✨ Features | 新功能
+
+* 测试 ([73d7f66](https://gitee.com/giserman001/giserman001-admin/commit/73d7f66865f17d94e801b4caac51ff2d895f1c95))
+
 ## 4.0.0 (2025-05-15)
 
 
