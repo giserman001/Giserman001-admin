@@ -19,7 +19,8 @@
     "pushall": "git push && git push origin-github",
     "lint:lint-staged": "lint-staged",
     "prepare": "husky",
-    "commit": "git add . && git-cz"
+    "release": "commit-and-tag-version",
+    "commit": "git add . && git-cz && pnpm release"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",
