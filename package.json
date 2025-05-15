@@ -16,11 +16,11 @@
     "clean:lib": "rimraf node_modules",
     "reinstall": "rimraf pnpm-lock.yaml && rimraf package.lock.json && rimraf node_modules && pnpm bootstrap",
     "report": "cross-env npm_lifecycle_event=report vite build",
-    "pushall": "git push && git push origin-github",
-    "lint:lint-staged": "lint-staged",
     "prepare": "husky",
-    "release": "commit-and-tag-version",
-    "commit": "git add . && git-cz && pnpm release"
+    "lint:lint-staged": "lint-staged",
+    "commit": "git add . && git-cz",
+    "release": "commit-and-tag-version --no-verify -a",
+    "pushall": "git push && git push origin-github"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",
