@@ -1,77 +1,114 @@
 <script setup lang="ts" name="accountManage">
-import { message } from 'ant-design-vue'
+import type { ColumnProps } from '@/components/ProTable/type/index'
 
-const dataSource = ref([{
-  id: 1,
-  numbers: 1,
-  dbname: 'test_db',
-  username: 'admin',
-  port: 3306,
-}, {
-  id: 2,
-  numbers: 1,
-  dbname: 'test_db',
-  username: 'admin',
-  port: 3306,
-}])
-const columns = [
+interface TableDataType {
+  key: number
+  name: string
+  age: number
+  street: string
+  building: string
+  number: number
+  companyAddress: string
+  companyName: string
+  gender: string
+}
+const columns: ColumnProps[] = [
   {
-    title: '序号',
-    dataIndex: 'numbers',
-    width: '6%',
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    fixed: 'left',
+    filters: [
+      {
+        text: 'Joe',
+        value: 'Joe',
+      },
+      {
+        text: 'John',
+        value: 'John',
+      },
+    ],
+    onFilter: (value: string, record: TableDataType) => record.name.indexOf(value) === 0,
+    search: {
+      el: 'input',
+      label: '名字',
+      defaultValue: '测试',
+      tooltip: '测试111',
+    },
   },
   {
-    title: '数据库名',
-    dataIndex: 'dbname',
+    title: 'Other',
+    dataIndex: 'Other',
+    children: [
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+        sorter: (a: TableDataType, b: TableDataType) => a.age - b.age,
+      },
+      {
+        title: 'Address',
+        children: [
+          {
+            title: 'Street',
+            dataIndex: 'street',
+            key: 'street',
+          },
+          {
+            title: 'Block',
+            children: [
+              {
+                title: 'Building',
+                dataIndex: 'building',
+                key: 'building',
+              },
+              {
+                title: 'Door No.',
+                dataIndex: 'number',
+                key: 'number',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
-    title: '用户名',
-    dataIndex: 'username',
+    title: 'Company',
+    dataIndex: 'Company',
+    children: [
+      {
+        title: 'Company Address',
+        dataIndex: 'companyAddress',
+        key: 'companyAddress',
+      },
+      {
+        title: 'Company Name',
+        dataIndex: 'companyName',
+        key: 'companyName',
+      },
+    ],
   },
   {
-    title: '端口',
-    dataIndex: 'port',
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
+    title: 'Gender',
+    dataIndex: 'gender',
+    key: 'gender',
+    fixed: 'right',
   },
 ]
+const data = [...Array.from({ length: 100 })].map((_, i) => ({
+  key: i,
+  name: 'John Brown',
+  age: i + 1,
+  street: 'Lake Park',
+  building: 'C',
+  number: 2035,
+  companyAddress: 'Lake Street 42',
+  companyName: 'SoftLake Co',
+  gender: 'M',
+}))
 </script>
 
 <template>
-  <ProTable :columns="columns" :data-source="dataSource">
-    <template #username-header="column">
-      <a-button type="primary">
-        {{ column.title }}
-      </a-button>
-    </template>
-    <template #dbname-header="column">
-      <a-button type="primary">
-        {{ column.title }}
-      </a-button>
-    </template>
-    <template #port-body="scope">
-      <a-button type="primary" @click="message.success('我是通过作用域插槽渲染的内容')">
-        {{ scope.column.title }}
-        {{ scope.record.port }}
-      </a-button>
-    </template>
-    <template #operation-body>
-      <span>
-        <a>删除</a>
-        <a-divider type="vertical" />
-        <a class="ant-dropdown-link">
-          更多操作
-          <down-outlined />
-        </a>
-      </span>
-    </template>
-    <template #table-title>
-      head
-    </template>
-    <template #table-footer>
-      head
-    </template>
-  </ProTable>
+  <ProTable :data-source="data" :columns="columns" :tool-button="['refresh', 'search', 'setting']" />
 </template>

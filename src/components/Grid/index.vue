@@ -10,7 +10,7 @@ interface Props {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  cols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
+  cols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }),
   collapsed: false,
   collapsedRows: 1,
   gap: 0,
@@ -35,12 +35,6 @@ const gridCols = computed(() => {
 })
 provide('cols', gridCols)
 
-// XS = 480,
-// SM = 576,
-// MD = 768,
-// LG = 992,
-// XL = 1200,
-// XXL = 1600,
 // 监听屏幕变化
 function resize(e: UIEvent) {
   const width = (e.target as Window).innerWidth

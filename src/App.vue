@@ -24,7 +24,6 @@ onErrorCaptured((err, instance, info) => {
     :theme="{
       token: {
         colorPrimary: globalStore.state.primary,
-        borderRadius: 2,
       },
       algorithm: !globalStore.state.isDark ? theme.defaultAlgorithm : theme.darkAlgorithm,
     }"
