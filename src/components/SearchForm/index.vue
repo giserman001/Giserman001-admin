@@ -63,7 +63,7 @@ const showCollapse = computed(() => {
 </script>
 
 <template>
-  <div v-if="columns.length" class="card table-search">
+  <div v-if="columns.length" class="table-search">
     <a-form :model="searchParam">
       <Grid ref="GridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
         <GridItem v-for="(item, index) in columns" :key="index" v-bind="getResponsive(item)" :index="index">
@@ -81,17 +81,25 @@ const showCollapse = computed(() => {
           </a-form-item>
         </GridItem>
         <GridItem suffix>
-          <div class="operation">
+          <div class="ly-mb-[20px] ly-flex ly-items-center ly-justify-end ly-gap-[10px]">
             <a-button type="primary" @click="search"> 搜索 </a-button>
             <a-button @click="reset"> 重置 </a-button>
-            <a-button v-if="showCollapse" type="primary" link class="search-isOpen" @click="collapsed = !collapsed">
+            <div v-if="showCollapse" ly-text="#1677ff" ly-cursor-pointer @click="collapsed = !collapsed">
               {{ collapsed ? "展开" : "合并" }}
-              <DownOutlined v-if="collapsed" />
-              <UpOutlined v-else />
-            </a-button>
+              <DownOutlined v-if="collapsed" class="ly-ml-[2px]!" />
+              <UpOutlined v-else class="ly-ml-[2px]!" />
+            </div>
           </div>
         </GridItem>
       </Grid>
     </a-form>
   </div>
 </template>
+
+<style lang="less" scoped>
+.table-search {
+  ::v-deep(.ant-form-item) {
+    margin-bottom: 20px !important;
+  }
+}
+</style>

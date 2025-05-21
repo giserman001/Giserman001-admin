@@ -129,7 +129,7 @@ function _reset() {
 
 <template>
   <div ly-flex ly-flex-col ly-gap="15px">
-    <div v-show="isShowSearch" ly-bg="#fff" ly-p="20px" ly-rounded="6px" ly-shadow="[0_0_12px_rgba(0,0,0,0.05)]">
+    <div v-show="isShowSearch" ly-bg="#fff" ly-px="20px" ly-pt="20px" ly-rounded="6px" ly-shadow="[0_0_12px_rgba(0,0,0,0.05)]">
       <SearchForm
         :search="_search" :reset="_reset" :columns="searchColumns" :search-param="searchParam"
         :search-col="searchCol"

@@ -45,6 +45,12 @@ const columns: ColumnProps[] = [
         dataIndex: 'age',
         key: 'age',
         sorter: (a: TableDataType, b: TableDataType) => a.age - b.age,
+        search: {
+          el: 'input',
+          label: '年龄',
+          defaultValue: 22,
+          tooltip: '年龄111',
+        },
       },
       {
         title: 'Address',
@@ -61,6 +67,12 @@ const columns: ColumnProps[] = [
                 title: 'Building',
                 dataIndex: 'building',
                 key: 'building',
+                search: {
+                  el: 'input',
+                  label: '建筑',
+                  defaultValue: '22',
+                  tooltip: '建筑111',
+                },
               },
               {
                 title: 'Door No.',
