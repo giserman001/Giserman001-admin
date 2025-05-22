@@ -110,8 +110,6 @@ function getSlotName(slot: string) {
   return slot.split('-')[0]
 }
 
-// console.log(slots, 'slots', renderSlots, 'renderSlots')
-
 // 列设置 ==> 需要过滤掉不需要设置的列
 const colRef = useTemplateRef<InstanceType<typeof ColSetting>>('ColRef')
 const openColSetting = () => colRef.value.openColSetting()

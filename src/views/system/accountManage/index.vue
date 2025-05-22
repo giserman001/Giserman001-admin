@@ -1,5 +1,18 @@
 <script setup lang="ts" name="accountManage">
+import type { ResultData } from '@/api/interface'
 import type { ColumnProps } from '@/components/ProTable/type/index'
+
+function test(): Promise<ResultData<any>> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        code: 200,
+        msg: 'ok',
+        data: [{ label: '测试111', value: 23 }, { label: '测试2222', value: 33 }],
+      })
+    }, 10000)
+  })
+}
 
 interface TableDataType {
   key: number
@@ -46,9 +59,10 @@ const columns: ColumnProps[] = [
         key: 'age',
         sorter: (a: TableDataType, b: TableDataType) => a.age - b.age,
         search: {
-          el: 'input',
+          el: 'select',
           label: '年龄',
           defaultValue: 22,
+          options: [{ label: '测试1', value: 23 }, { label: '测试2', value: 33 }],
           tooltip: '年龄111',
         },
       },
@@ -68,9 +82,10 @@ const columns: ColumnProps[] = [
                 dataIndex: 'building',
                 key: 'building',
                 search: {
-                  el: 'input',
+                  el: 'select',
                   label: '建筑',
                   defaultValue: '22',
+                  options: test,
                   tooltip: '建筑111',
                 },
               },

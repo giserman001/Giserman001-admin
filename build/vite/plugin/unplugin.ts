@@ -10,18 +10,18 @@ export function configUnpluginPlugin(): PluginOption[] {
       include: [
         /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
         /\.vue$/,
-        /\.vue\?vue/ // .vue
+        /\.vue\?vue/, // .vue
       ],
       imports: [
         'vue',
         'vue-router',
         '@vueuse/core',
         {
-          'lodash-es': ['throttle', 'debounce', 'cloneDeep', 'pick']
-        }
+          'lodash-es': ['throttle', 'debounce', 'cloneDeep', 'pick'],
+        },
       ],
       resolvers: [AntDesignVueResolver()],
-      dirs: ['src/store/**/*', 'src/hooks/**/*']
+      dirs: ['src/store/**/*', 'src/hooks/**/*'],
     }),
     Components({
       dts: 'types/components.d.ts',
@@ -32,8 +32,8 @@ export function configUnpluginPlugin(): PluginOption[] {
       resolvers: [AntDesignVueResolver({ importStyle: 'less' })],
       importPathTransform(path: string) {
         return path.replace(/.tsx$/, '')
-      }
-    })
+      },
+    }),
   ]
   return plugins
 }

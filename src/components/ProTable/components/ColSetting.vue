@@ -36,7 +36,6 @@ const filterColumns = ref<ColumnProps[]>([])
 watch(() => drawerVisible.value, (val) => {
   if (val) {
     filterColumns.value = filterColumnsByFields(columnsCol.value)
-    console.log(filterColumns.value, 'filterColumns.value')
   }
   else {
     filterColumns.value = []

@@ -1,24 +1,24 @@
 import type { ConfigEnv } from 'vite'
+import { fileURLToPath, URL } from 'node:url'
+import { theme } from 'ant-design-vue'
+import dayjs from 'dayjs'
+import { defineConfig, loadEnv } from 'vite'
+import { wrapperEnv } from './build/utils'
 import { createVitePlugins } from './build/vite/plugin'
 import { createProxy } from './build/vite/proxy'
-import { wrapperEnv } from './build/utils'
-import { fileURLToPath, URL } from 'node:url'
-import { defineConfig, loadEnv } from 'vite'
-import pkg from "./package.json";
-import dayjs from "dayjs";
-import { theme } from 'ant-design-vue';
+import pkg from './package.json'
 
-const { defaultAlgorithm, defaultSeed } = theme;
+const { defaultAlgorithm, defaultSeed } = theme
 
-const mapToken = defaultAlgorithm(defaultSeed);
+const mapToken = defaultAlgorithm(defaultSeed)
 
 // console.log(mapToken, 'mapToken')
 
-const { dependencies, devDependencies, name, version } = pkg;
+const { dependencies, devDependencies, name, version } = pkg
 const __APP_INFO__ = {
   pkg: { dependencies, devDependencies, name, version },
-  lastBuildTime: dayjs().format("YYYY-MM-DD HH:mm:ss")
-};
+  lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }: ConfigEnv) => {
@@ -36,18 +36,18 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
     base: VITE_PUBLIC_PATH,
     server: {
       port: VITE_PORT,
-      proxy: createProxy(VITE_PROXY)
+      proxy: createProxy(VITE_PROXY),
     },
     // 向import.meta.env注入变量,无法注入全局windows,只能注入import.meta.env中
     // 'import.meta.env.ENV_VARIABLE': JSON.stringify(process.env.ENV_VARIABLE)
     // https://cn.vitejs.dev/config/shared-options.html#envprefix
     define: {
       __APP_INFO__VERSION: JSON.stringify(version),
-      __APP_INFO__: JSON.stringify(__APP_INFO__)
+      __APP_INFO__: JSON.stringify(__APP_INFO__),
     },
     esbuild: {
       // pure: VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
-      drop: VITE_DROP_CONSOLE ? ['debugger'] : []
+      drop: VITE_DROP_CONSOLE ? ['debugger'] : [],
     },
     build: {
       sourcemap: true,
@@ -67,7 +67,7 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: '[ext]/[name]-[hash].[ext]',
           manualChunks(id) {
-            //静态资源分拆打包
+            // 静态资源分拆打包
             // 可参考https://www.cnblogs.com/jyk/p/16029074.html
             // node包插件打包在一起
             if (id.includes('node_modules')) {
@@ -85,9 +85,9 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
                   return 'vendors'
               }
             }
-          }
-        }
-      }
+          },
+        },
+      },
     },
     plugins: createVitePlugins(viteEnv, isBuild),
     resolve: {
@@ -95,24 +95,24 @@ export default defineConfig(({ command, mode }: ConfigEnv) => {
       alias: [
         {
           find: '@',
-          replacement: fileURLToPath(new URL('./src', import.meta.url))
-        }
-      ]
+          replacement: fileURLToPath(new URL('./src', import.meta.url)),
+        },
+      ],
     },
     css: {
       modules: {
         // css模块化 文件以.module.[css|less|scss]结尾
         generateScopedName: '[name]__[local]___[hash:base64:5]',
         hashPrefix: 'prefix',
-        localsConvention: 'camelCaseOnly'
+        localsConvention: 'camelCaseOnly',
       },
       preprocessorOptions: {
         less: {
           javascriptEnabled: true,
           additionalData: '@import "./src/style/variables.less";',
           modifyVars: mapToken,
-        }
-      }
-    }
+        },
+      },
+    },
   }
 })

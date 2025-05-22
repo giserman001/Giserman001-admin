@@ -10,7 +10,7 @@ interface Props {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  cols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 5 }),
+  cols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
   collapsed: false,
   collapsedRows: 1,
   gap: 0,
@@ -88,7 +88,7 @@ function findIndex() {
       if (Number(prev) > props.collapsedRows * (gridCols.value as number) - suffixCols) {
         hiddenIndex.value = index
         find = true
-        throw new Error('find it')
+        // throw new Error('find it')
       }
       return prev
     }, 0)

@@ -36,5 +36,7 @@ export default antfu({
     'unused-imports/no-unused-vars': 'warn',
     'unused-imports/no-unused-imports': 'warn',
     'ts/no-namespace': 'off',
+    'n/prefer-global/process': 'off',
+    'vue/require-component-is': 'off',
   },
 })
