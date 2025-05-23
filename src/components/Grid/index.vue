@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 provide('gap', Array.isArray(props.gap) ? props.gap[0] : props.gap)
 
 // 注入响应式断点
-const breakPoint = ref<BreakPoint>('xl')
+const breakPoint = ref<BreakPoint>()
 provide('breakPoint', breakPoint)
 
 // 注入要开始折叠的 index
@@ -88,7 +88,7 @@ function findIndex() {
       if (Number(prev) > props.collapsedRows * (gridCols.value as number) - suffixCols) {
         hiddenIndex.value = index
         find = true
-        // throw new Error('find it')
+        throw new Error('find it')
       }
       return prev
     }, 0)
@@ -137,7 +137,7 @@ const style = computed(() => {
   }
 })
 
-onBeforeMount(() => props.collapsed && findIndex())
+// onBeforeMount(() => props.collapsed && findIndex())
 onMounted(() => {
   resize({ target: { innerWidth: window.innerWidth } } as unknown as UIEvent)
   window.addEventListener('resize', resize)

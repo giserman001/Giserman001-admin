@@ -66,7 +66,7 @@ const showCollapse = computed(() => {
   <div v-if="columns.length" class="table-search">
     <a-form :model="searchParam">
       <Grid ref="GridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
-        <GridItem v-for="(item, index) in columns" :key="index" v-bind="getResponsive(item)" :index="index">
+        <GridItem v-for="(item, index) in columns" :key="(item.dataIndex as string)" v-bind="getResponsive(item)" :index="index">
           <a-form-item>
             <template #label>
               <a-space :size="4">

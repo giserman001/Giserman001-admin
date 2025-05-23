@@ -1,6 +1,7 @@
 <script setup lang="ts" name="ProTable" generic="T extends Record<string, any>, U extends ColumnProps">
-// import type { TableColumnType } from 'ant-design-vue'
+// import type { TablePaginationConfig } from 'ant-design-vue'
 // import type { TableRowSelection } from 'ant-design-vue/es/table/interface'
+import type { TablePaginationConfig, TableProps } from 'ant-design-vue'
 import type { ColumnProps } from './type/index'
 import type { BreakPoint } from '@/components/Grid/interface'
 import { SearchOutlined, SettingFilled, SyncOutlined } from '@ant-design/icons-vue'
@@ -13,15 +14,49 @@ interface ProTableProps {
   columns: U[]
   rowKey?: ((record: T, index?: number) => any) | string
   toolButton?: ('refresh' | 'setting' | 'search')[] | boolean // 是否显示表格功能按钮 ==> 非必传（默认为true）
+  pageable?: TablePaginationConfig | false
   searchCol?: number | Record<BreakPoint, number> // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
 }
 
-const { dataSource = [], columns, rowKey = 'id', toolButton, searchCol = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 } } = defineProps<ProTableProps>()
+interface TableChangeParams {
+  pag: { pageSize: number, current: number }
+  filters: any
+  sorter: any
+}
 
-const emit = defineEmits(['refresh', 'search', 'reset'])
+const { dataSource = [], columns, rowKey = 'id', toolButton, pageable, searchCol = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 } } = defineProps<ProTableProps>()
+
+const emit = defineEmits<{
+  (e: 'refresh'): void
+  (e: 'search', data: { [key: string]: any }): void
+  (e: 'reset'): void
+  (e: 'change', data: TableChangeParams): void
+}>()
 
 // 搜索字段
-const searchParam = ref<Record<string, any>>()
+const searchParam = ref<{ [key: string]: any }>({})
+
+// 搜索保存默认字段
+const searchInitParam = ref<{ [key: string]: any }>({
+  current: 1,
+  pageSize: 10,
+})
+
+const pagination = ref<TablePaginationConfig | false>({ total: 0, current: 1, pageSize: 10 })
+
+watch(() => pageable, (val) => {
+  if (val) {
+    if (typeof val === 'boolean') {
+      pagination.value = val
+    }
+    else {
+      pagination.value = {
+        ...pagination.value,
+        ...val,
+      }
+    }
+  }
+}, { deep: true })
 
 // 扁平化 columns 的方法
 function flatColumnsFunc(columns: ColumnProps[]) {
@@ -67,9 +102,11 @@ watch(searchColumns, (val) => {
     const defaultValue = column.search?.defaultValue
     if (defaultValue !== undefined && defaultValue !== null) {
       searchParam.value[key] = defaultValue
+      // 为了reset方法使用
+      searchInitParam.value[key] = defaultValue
     }
   })
-}, { deep: true })
+}, { deep: true, immediate: true })
 
 // 渲染的 columns
 function filterColumnsByFields(columns, fields = 'isShow') {
@@ -116,12 +153,23 @@ const openColSetting = () => colRef.value.openColSetting()
 
 function _search() {
   // search()
-  emit('search')
+  emit('search', searchParam.value)
 }
 
 function _reset() {
   // reset()
   emit('reset')
+}
+
+// 分页、排序、筛选变化时触发
+const handleTableChange: TableProps['onChange'] = (
+  pag: { pageSize: number, current: number },
+  filters: any,
+  sorter: any,
+) => {
+  (pagination.value as TablePaginationConfig).current = pag.current
+  ;(pagination.value as TablePaginationConfig).pageSize = pag.pageSize
+  emit('change', { pag, filters, sorter })
 }
 </script>
 
@@ -152,8 +200,9 @@ function _reset() {
         </div>
       </div>
       <a-table
-        :data-source="dataSource" :columns="renderColumns" :row-key="rowKey" bordered size="small"
+        :data-source="dataSource" :columns="renderColumns" :row-key="rowKey" :pagination="pagination" bordered size="small"
         v-bind="$attrs"
+        @change="handleTableChange"
       >
         <!-- 头部插槽 -->
         <template v-if="headSlots?.length" #headerCell="{ title, column }">

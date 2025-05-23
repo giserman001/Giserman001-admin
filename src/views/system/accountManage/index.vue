@@ -1,4 +1,4 @@
-<script setup lang="ts" name="accountManage">
+<script setup lang="tsx" name="accountManage">
 import type { ResultData } from '@/api/interface'
 import type { ColumnProps } from '@/components/ProTable/type/index'
 
@@ -8,11 +8,13 @@ function test(): Promise<ResultData<any>> {
       resolve({
         code: 200,
         msg: 'ok',
-        data: [{ label: '测试111', value: 23 }, { label: '测试2222', value: 33 }],
+        data: [{ name: '测试111', val: 23 }, { name: '测试2222', val: 33 }],
       })
     }, 10000)
   })
 }
+
+const addonBeforeValue = ref('add')
 
 interface TableDataType {
   key: number
@@ -81,11 +83,34 @@ const columns: ColumnProps[] = [
                 title: 'Building',
                 dataIndex: 'building',
                 key: 'building',
+                // search: {
+                //   el: 'select',
+                //   label: '建筑',
+                //   defaultValue: '22',
+                //   options: test,
+                //   props: {
+                //     fieldNames: { label: 'name', value: 'val' },
+                //   },
+                //   tooltip: '建筑111',
+                // },
                 search: {
-                  el: 'select',
-                  label: '建筑',
-                  defaultValue: '22',
-                  options: test,
+                  el: 'input-number',
+                  label: '数字',
+                  defaultValue: 11,
+                  props: {
+                    fieldNames: { label: 'name', value: 'val' },
+                  },
+                  slots: {
+                    addonBefore: ({ column, searchParam }) => {
+                      // console.log(column, searchParam, 'column, searchParam outer')
+                      return (
+                        <a-select v-model:value={addonBeforeValue.value} style="width: 60px">
+                          <a-select-option value="add">+</a-select-option>
+                          <a-select-option value="minus">-</a-select-option>
+                        </a-select>
+                      )
+                    },
+                  },
                   tooltip: '建筑111',
                 },
               },
@@ -93,6 +118,16 @@ const columns: ColumnProps[] = [
                 title: 'Door No.',
                 dataIndex: 'number',
                 key: 'number',
+                search: {
+                  el: 'select',
+                  label: '建筑333',
+                  defaultValue: '22',
+                  options: test,
+                  props: {
+                    fieldNames: { label: 'name', value: 'val' },
+                  },
+                  tooltip: '建筑111',
+                },
               },
             ],
           },
@@ -108,11 +143,36 @@ const columns: ColumnProps[] = [
         title: 'Company Address',
         dataIndex: 'companyAddress',
         key: 'companyAddress',
+        search: {
+          el: 'select',
+          label: '建筑333',
+          defaultValue: '22',
+          options: test,
+          props: {
+            fieldNames: { label: 'name', value: 'val' },
+          },
+          tooltip: '建筑111',
+        },
       },
       {
         title: 'Company Name',
         dataIndex: 'companyName',
         key: 'companyName',
+        search: {
+          label: '数字',
+          // defaultValue: '22',
+          render: ({ searchParam }) => {
+            return (
+              <div class="ly-flex ly-items-center">
+                <a-input v-model:value={searchParam.minAge} placeholder="最小数字" />
+                <span class="ly-mx-[10px]">-</span>
+                {searchParam.minAge}
+                <a-input v-model:value={searchParam.maxAge} placeholder="最大数字" />
+              </div>
+            )
+          },
+          tooltip: '建筑111',
+        },
       },
     ],
   },
@@ -121,6 +181,16 @@ const columns: ColumnProps[] = [
     dataIndex: 'gender',
     key: 'gender',
     fixed: 'right',
+    search: {
+      el: 'select',
+      label: '建筑333',
+      defaultValue: '22',
+      options: test,
+      props: {
+        fieldNames: { label: 'name', value: 'val' },
+      },
+      tooltip: '建筑111',
+    },
   },
 ]
 const data = [...Array.from({ length: 100 })].map((_, i) => ({
