@@ -1,12 +1,11 @@
+import type { PageResult, Response } from './types/index'
 
-import type { Response, PageResult } from './types/index'
+type ResponseType<T> = Omit<Response<T>, 'data'> & { data?: T }
 
-type ResponseType<T> = Omit<Response<T>, 'data'> & { data?: T };
-
-export const createResponse = <T>(data: T = null as unknown as T, code = 200, msg = 'ok'): ResponseType<T> => {
-  return { code, msg, data };
+export function createResponse<T>(data: T = null as unknown as T, code = 200, msg = 'ok'): ResponseType<T> {
+  return { code, msg, data }
 }
 
-export const createPageResponse = <T>(data: PageResult<T>, code = 200, msg = 'ok'): ResponseType<PageResult<T>> => {
+export function createPageResponse<T>(data: PageResult<T>, code = 200, msg = 'ok'): ResponseType<PageResult<T>> {
   return createResponse(data, code, msg)
 }

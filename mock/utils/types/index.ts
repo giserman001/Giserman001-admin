@@ -1,7 +1,7 @@
 export interface PageResult<T> {
   list: T[]
   pageSize: number
-  currentPage: number
+  pageNum: number
   total: number
 }
 

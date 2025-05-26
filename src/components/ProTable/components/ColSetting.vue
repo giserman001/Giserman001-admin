@@ -48,6 +48,7 @@ function changeChecked(record: ColumnProps) {
 }
 
 function dealColumnsCol(columns: ColumnProps[], record: ColumnProps) {
+  console.log('走了吗')
   columns?.forEach((column) => {
     if (column?.dataIndex === record?.dataIndex) {
       column.isShow = record.isShow
@@ -56,11 +57,13 @@ function dealColumnsCol(columns: ColumnProps[], record: ColumnProps) {
       dealColumnsCol(column.children, record)
     }
   })
+  console.log(columnsCol.value, 'columnsCol')
 }
 
 watch(() => currentRecord.value, (val) => {
   dealColumnsCol(columnsCol.value, val)
-})
+  columnsCol.value = []
+}, { deep: true })
 
 function openColSetting() {
   drawerVisible.value = true

@@ -1,4 +1,5 @@
 import type { TableColumnType } from 'ant-design-vue'
+import type { Dayjs } from 'dayjs'
 import type { ResultData } from '@/api/interface'
 // import { VNode, ComponentPublicInstance, Ref } from "vue";
 import type { BreakPoint, Responsive } from '@/components/Grid/interface'
@@ -10,6 +11,7 @@ export type SearchType =
   | 'tree-select'
   | 'cascader'
   | 'date-picker'
+  | 'range-picker'
   | 'time-picker'
   | 'time-select'
   | 'switch'
@@ -39,7 +41,10 @@ export type SearchProps = {
   order?: number // 搜索项排序（从大到小）
   span?: number // 搜索项所占用的列数，默认为 1 列
   offset?: number // 搜索字段左侧偏移列数
-  defaultValue?: string | number | boolean | any[] | Ref<any> // 搜索项默认值
+  defaultValue?: string | number | boolean | any[] | Ref<any> | Dayjs // 搜索项默认值
+  events?: {
+    [key: string]: (...params: any) => void
+  }
   slots?: {
     [key: string]: VNode | ((params?: any) => VNode) // 所有插槽 default 属于默认插槽
   }

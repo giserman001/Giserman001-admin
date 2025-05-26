@@ -81,19 +81,39 @@ function fullColumnsFunc(columns: ColumnProps[]) {
   })
 }
 
-const fullColumns = computed(() => fullColumnsFunc(columns))
-
-// 扁平化 columns
-const flatColumns = computed(() => flatColumnsFunc(fullColumns.value))
-
-// 搜索 columns
-const searchColumns = computed(() => {
-  const filterSearchColumns = flatColumns.value?.filter(item => item.search?.el || item.search?.render)
+// 获取搜索col
+function getSearchColumnsFunc(columns: ColumnProps[]) {
+  const filterSearchColumns = columns?.filter(item => item.search?.el || item.search?.render)
   filterSearchColumns.forEach((col, index) => {
     col.search.order = col.search?.order ?? index + 1
   })
   return filterSearchColumns.sort((a, b) => a.search!.order! - b.search!.order!)
+}
+
+const fullColumns = ref<ColumnProps[]>([])
+const flatColumns = ref<ColumnProps[]>([])
+const searchColumns = ref<ColumnProps[]>([])
+
+watchEffect(() => {
+  fullColumns.value = fullColumnsFunc(columns)
+  flatColumns.value = flatColumnsFunc(fullColumns.value)
+  searchColumns.value = getSearchColumnsFunc(flatColumns.value)
 })
+
+// const fullColumns = computed(() => fullColumnsFunc(columns))
+
+// 扁平化 columns
+// const flatColumns = computed(() => flatColumnsFunc(fullColumns.value))
+
+// 搜索 columns
+
+// const searchColumns = computed(() => {
+//   const filterSearchColumns = flatColumns.value?.filter(item => item.search?.el || item.search?.render)
+//   filterSearchColumns.forEach((col, index) => {
+//     col.search.order = col.search?.order ?? index + 1
+//   })
+//   return filterSearchColumns.sort((a, b) => a.search!.order! - b.search!.order!)
+// })
 
 watch(searchColumns, (val) => {
   // 设置 搜索表单默认排序 && 搜索表单项的默认值
@@ -101,9 +121,9 @@ watch(searchColumns, (val) => {
     const key = column.search?.key ?? column.dataIndex
     const defaultValue = column.search?.defaultValue
     if (defaultValue !== undefined && defaultValue !== null) {
-      searchParam.value[key] = defaultValue
+      searchParam.value[key as string] = defaultValue
       // 为了reset方法使用
-      searchInitParam.value[key] = defaultValue
+      searchInitParam.value[key as string] = defaultValue
     }
   })
 }, { deep: true, immediate: true })
@@ -123,6 +143,10 @@ const renderColumns = computed(() => {
   const cloneFullColumns = cloneDeep(fullColumns.value)
   return filterColumnsByFields(cloneFullColumns)
 })
+
+watch(fullColumns, (val) => {
+  console.log(val, 'watch')
+}, { deep: true })
 
 // 是否显示搜索模块
 const isShowSearch = ref(true)
@@ -175,7 +199,7 @@ const handleTableChange: TableProps['onChange'] = (
 
 <template>
   <div ly-flex ly-flex-col ly-gap="15px">
-    <div v-show="isShowSearch" ly-bg="#fff" ly-px="20px" ly-pt="20px" ly-rounded="6px" ly-shadow="[0_0_12px_rgba(0,0,0,0.05)]">
+    <div v-show="isShowSearch && searchColumns?.length" ly-bg="#fff" ly-px="20px" ly-pt="20px" ly-rounded="6px" ly-shadow="[0_0_12px_rgba(0,0,0,0.05)]">
       <SearchForm
         :search="_search" :reset="_reset" :columns="searchColumns" :search-param="searchParam"
         :search-col="searchCol"
@@ -194,7 +218,7 @@ const handleTableChange: TableProps['onChange'] = (
           <a-button v-if="showToolButton('refresh')" shape="circle" :icon="h(SyncOutlined)" @click="emit('refresh')" />
           <a-button v-if="showToolButton('setting')" shape="circle" :icon="h(SettingFilled)" @click="openColSetting" />
           <a-button
-            v-if="showToolButton('search')" shape="circle" :icon="h(SearchOutlined)"
+            v-if="showToolButton('search') && searchColumns?.length" shape="circle" :icon="h(SearchOutlined)"
             @click="isShowSearch = !isShowSearch"
           />
         </div>
@@ -213,10 +237,13 @@ const handleTableChange: TableProps['onChange'] = (
           </template>
         </template>
         <!-- 单元格插槽 -->
-        <template v-if="bodySlots?.length" #bodyCell="{ column, text, record }">
+        <template v-if="bodySlots?.length" #bodyCell="{ column, text, record, index }">
+          <template v-if="!bodySlots.includes('index-body') && column.dataIndex === 'index'">
+            {{ ((pagination as TablePaginationConfig).current - 1) * (pagination as TablePaginationConfig).pageSize + index + 1 }}
+          </template>
           <template v-for="slot in bodySlots">
             <template v-if="getSlotName(slot) === column.dataIndex">
-              <slot :name="slot" v-bind="{ column, text, record }" />
+              <slot :name="slot" v-bind="{ column, text, record, index }" />
             </template>
           </template>
         </template>
