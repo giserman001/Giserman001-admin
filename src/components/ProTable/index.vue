@@ -1,6 +1,4 @@
 <script setup lang="ts" name="ProTable" generic="T extends Record<string, any>, U extends ColumnProps">
-// import type { TablePaginationConfig } from 'ant-design-vue'
-// import type { TableRowSelection } from 'ant-design-vue/es/table/interface'
 import type { TablePaginationConfig, TableProps } from 'ant-design-vue'
 import type { ColumnProps } from './type/index'
 import type { BreakPoint } from '@/components/Grid/interface'
@@ -8,9 +6,17 @@ import { SearchOutlined, SettingFilled, SyncOutlined } from '@ant-design/icons-v
 import { cloneDeep } from 'lodash-es'
 import { h } from 'vue'
 import ColSetting from './components/ColSetting.vue'
+// import type { TablePaginationConfig } from 'ant-design-vue'
+// import type { TableRowSelection } from 'ant-design-vue/es/table/interface'
+import { useTable } from './hooks/useTable'
 
 interface ProTableProps {
   dataSource?: T[]
+  requestApi?: (params: any) => Promise<any> // 请求表格数据的 api ==> 非必传
+  requestAuto?: boolean // 是否自动执行请求 api ==> 非必传（默认为true）
+  requestError?: (params: any) => void // 表格 api 请求错误监听 ==> 非必传
+  dataCallback?: (data: any) => any // 返回数据的回调函数，可以对数据进行处理 ==> 非必传
+  initParam?: any // 初始化请求参数 ==> 非必传（默认为{}）
   columns: U[]
   rowKey?: ((record: T, index?: number) => any) | string
   toolButton?: ('refresh' | 'setting' | 'search')[] | boolean // 是否显示表格功能按钮 ==> 非必传（默认为true）
@@ -24,7 +30,7 @@ interface TableChangeParams {
   sorter: any
 }
 
-const { dataSource = [], columns, rowKey = 'id', toolButton, pageable, searchCol = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 } } = defineProps<ProTableProps>()
+const { dataSource = [], columns, rowKey = 'id', toolButton, pageable, searchCol = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }, requestApi, initParam = {}, dataCallback, requestError, requestAuto = true } = defineProps<ProTableProps>()
 
 const emit = defineEmits<{
   (e: 'refresh'): void
@@ -33,30 +39,9 @@ const emit = defineEmits<{
   (e: 'change', data: TableChangeParams): void
 }>()
 
-// 搜索字段
-const searchParam = ref<{ [key: string]: any }>({})
-
-// 搜索保存默认字段
-const searchInitParam = ref<{ [key: string]: any }>({
-  current: 1,
-  pageSize: 10,
-})
-
-const pagination = ref<TablePaginationConfig | false>({ total: 0, current: 1, pageSize: 10 })
-
-watch(() => pageable, (val) => {
-  if (val) {
-    if (typeof val === 'boolean') {
-      pagination.value = val
-    }
-    else {
-      pagination.value = {
-        ...pagination.value,
-        ...val,
-      }
-    }
-  }
-}, { deep: true })
+// 表格操作 Hooks
+const { tableData, pagination, searchParam, searchInitParam, getTableList, search, reset, handlePageChange }
+  = useTable(requestApi, initParam, pageable, dataCallback, requestError)
 
 // 扁平化 columns 的方法
 function flatColumnsFunc(columns: ColumnProps[]) {
@@ -100,21 +85,6 @@ watchEffect(() => {
   searchColumns.value = getSearchColumnsFunc(flatColumns.value)
 })
 
-// const fullColumns = computed(() => fullColumnsFunc(columns))
-
-// 扁平化 columns
-// const flatColumns = computed(() => flatColumnsFunc(fullColumns.value))
-
-// 搜索 columns
-
-// const searchColumns = computed(() => {
-//   const filterSearchColumns = flatColumns.value?.filter(item => item.search?.el || item.search?.render)
-//   filterSearchColumns.forEach((col, index) => {
-//     col.search.order = col.search?.order ?? index + 1
-//   })
-//   return filterSearchColumns.sort((a, b) => a.search!.order! - b.search!.order!)
-// })
-
 watch(searchColumns, (val) => {
   // 设置 搜索表单默认排序 && 搜索表单项的默认值
   val?.forEach((column) => {
@@ -144,10 +114,6 @@ const renderColumns = computed(() => {
   return filterColumnsByFields(cloneFullColumns)
 })
 
-watch(fullColumns, (val) => {
-  console.log(val, 'watch')
-}, { deep: true })
-
 // 是否显示搜索模块
 const isShowSearch = ref(true)
 
@@ -176,12 +142,12 @@ const colRef = useTemplateRef<InstanceType<typeof ColSetting>>('ColRef')
 const openColSetting = () => colRef.value.openColSetting()
 
 function _search() {
-  // search()
+  search()
   emit('search', searchParam.value)
 }
 
 function _reset() {
-  // reset()
+  reset()
   emit('reset')
 }
 
@@ -191,15 +157,33 @@ const handleTableChange: TableProps['onChange'] = (
   filters: any,
   sorter: any,
 ) => {
-  (pagination.value as TablePaginationConfig).current = pag.current
-  ;(pagination.value as TablePaginationConfig).pageSize = pag.pageSize
-  emit('change', { pag, filters, sorter })
+  if (pagination.value !== false) {
+    pagination.value.current = pag.current
+    pagination.value.pageSize = pag.pageSize
+    handlePageChange()
+    emit('change', { pag, filters, sorter })
+  }
 }
+
+// 处理表格数据
+const processTableData = computed(() => {
+  if (!dataSource.length)
+    return tableData.value
+  return dataSource
+})
+
+// 初始化表格数据 && 拖拽排序
+onMounted(() => {
+  requestAuto && getTableList()
+})
 </script>
 
 <template>
   <div ly-flex ly-flex-col ly-gap="15px">
-    <div v-show="isShowSearch && searchColumns?.length" ly-bg="#fff" ly-px="20px" ly-pt="20px" ly-rounded="6px" ly-shadow="[0_0_12px_rgba(0,0,0,0.05)]">
+    <div
+      v-show="isShowSearch && searchColumns?.length" ly-bg="#fff" ly-px="20px" ly-pt="20px" ly-rounded="6px"
+      ly-shadow="[0_0_12px_rgba(0,0,0,0.05)]"
+    >
       <SearchForm
         :search="_search" :reset="_reset" :columns="searchColumns" :search-param="searchParam"
         :search-col="searchCol"
@@ -224,9 +208,8 @@ const handleTableChange: TableProps['onChange'] = (
         </div>
       </div>
       <a-table
-        :data-source="dataSource" :columns="renderColumns" :row-key="rowKey" :pagination="pagination" bordered size="small"
-        v-bind="$attrs"
-        @change="handleTableChange"
+        :data-source="processTableData" :columns="renderColumns" :row-key="rowKey" :pagination="pagination" bordered
+        size="small" v-bind="$attrs" @change="handleTableChange"
       >
         <!-- 头部插槽 -->
         <template v-if="headSlots?.length" #headerCell="{ title, column }">
@@ -239,7 +222,8 @@ const handleTableChange: TableProps['onChange'] = (
         <!-- 单元格插槽 -->
         <template v-if="bodySlots?.length" #bodyCell="{ column, text, record, index }">
           <template v-if="!bodySlots.includes('index-body') && column.dataIndex === 'index'">
-            {{ ((pagination as TablePaginationConfig).current - 1) * (pagination as TablePaginationConfig).pageSize + index + 1 }}
+            {{ ((pagination as TablePaginationConfig).current - 1) * (pagination as TablePaginationConfig).pageSize
+              + index + 1 }}
           </template>
           <template v-for="slot in bodySlots">
             <template v-if="getSlotName(slot) === column.dataIndex">

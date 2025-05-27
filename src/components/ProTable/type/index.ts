@@ -1,4 +1,4 @@
-import type { TableColumnType } from 'ant-design-vue'
+import type { TableColumnType, TablePaginationConfig } from 'ant-design-vue'
 import type { Dayjs } from 'dayjs'
 import type { ResultData } from '@/api/interface'
 // import { VNode, ComponentPublicInstance, Ref } from "vue";
@@ -57,4 +57,28 @@ export interface ColumnProps extends TableColumnType {
   search?: SearchProps | undefined // 搜索项配置
   children?: ColumnProps[]
   fieldNames?: FieldNamesProps // 指定 label && value && children 的 key 值
+}
+
+export namespace Table {
+  export interface Pageable {
+    current: number
+    pageSize: number
+    total: number
+  }
+  export interface StateProps {
+    tableData: any[]
+    pagination: TablePaginationConfig | false
+    searchParam: {
+      [key: string]: any
+    }
+    searchInitParam: {
+      [key: string]: any
+    }
+    totalParam: {
+      [key: string]: any
+    }
+    icon?: {
+      [key: string]: any
+    }
+  }
 }

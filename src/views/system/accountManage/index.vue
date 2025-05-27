@@ -2,26 +2,24 @@
 import type { ColumnProps } from '@/components/ProTable/type/index'
 import { getUserList } from '@/api/modules/user'
 
-interface Role {
-  id: number
-  username: string
-  nickname: string
-  avatar: string
-  phone: string
-  sex: number
-  email: string
-  role: string[]
-  status: number
-  dept: {
-    id: number
-    name: string
-  }
-  remark: string
-  updateTime: string
-  createTime: string
-}
-
-const dataSource = ref<Role[]>([])
+// interface Role {
+//   id: number
+//   username: string
+//   nickname: string
+//   avatar: string
+//   phone: string
+//   sex: number
+//   email: string
+//   role: string[]
+//   status: number
+//   dept: {
+//     id: number
+//     name: string
+//   }
+//   remark: string
+//   updateTime: string
+//   createTime: string
+// }
 
 const columns: ColumnProps[] = [
   {
@@ -80,21 +78,13 @@ const pagination = ref({
   total: 0,
 })
 
-async function getUserListFn() {
-  const res = await getUserList()
-  dataSource.value = res.data.list
-  pagination.value.total = res.data.total
-  pagination.value.current = res.data.pageNum
-  pagination.value.pageSize = res.data.pageSize
+async function getUserListFn(params: any) {
+  return await getUserList(params)
 }
-
-onMounted(() => {
-  getUserListFn()
-})
 </script>
 
 <template>
-  <ProTable :data-source="dataSource" :columns="columns" :pagination="pagination" :tool-button="['refresh', 'search', 'setting']">
+  <ProTable :request-api="getUserListFn" :columns="columns" :pageable="pagination" :tool-button="['refresh', 'search', 'setting']">
     <template #avatar-body="scope">
       <a-avatar :src="scope.record.avatar" />
     </template>

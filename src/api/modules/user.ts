@@ -5,13 +5,10 @@ import http from '@/api'
  * @name 用户管理模块
  */
 // 获取用户列表
-export function getUserList() {
-  return http.post<ResPage<any>>(`/user/list`)
-}
 
-// export function getUserList(params: User.ReqUserParams) {
-//   return http.post<ResPage<User.ResUserList>>(`/user/list`, params)
-// }
+export function getUserList(params: User.ReqUserParams) {
+  return http.post<ResPage<User.ResUserList>>(`/user/list`, params)
+}
 
 // 获取树形用户列表
 export function getUserTreeList(params: User.ReqUserParams) {
