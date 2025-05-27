@@ -44,13 +44,13 @@ declare global {
 
   const __APP_INFO__: {
     pkg: {
-      name: string;
-      version: string;
-      dependencies: Recordable<string>;
-      devDependencies: Recordable<string>;
-    };
-    lastBuildTime: string;
-  };
+      name: string
+      version: string
+      dependencies: Recordable<string>
+      devDependencies: Recordable<string>
+    }
+    lastBuildTime: string
+  }
 
   type Nullable<T> = T | null
   type Recordable<T = any> = Record<string, T>
@@ -66,11 +66,11 @@ declare global {
     (...arg: T[]): Promise<R>
   }
 
-  type Indexable<T = any> = {
+  interface Indexable<T = any> {
     [key: string]: T
   }
   type ObjToKeyValUnion<T> = {
-    [K in keyof T]: { key: K; value: T[K] }
+    [K in keyof T]: { key: K, value: T[K] }
   }[keyof T]
 
   type ObjToKeyValArray<T> = {
@@ -108,9 +108,9 @@ declare global {
     }
   }
   interface Navigator {
-    msSaveOrOpenBlob: (blob: Blob, fileName: string) => void;
-    browserLanguage: string;
+    msSaveOrOpenBlob: (blob: Blob, fileName: string) => void
+    browserLanguage: string
   }
 
-  type GreyOrWeakType = "grey" | "weak";
+  type GreyOrWeakType = 'grey' | 'weak'
 }

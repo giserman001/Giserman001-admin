@@ -2,7 +2,6 @@
 import type { MenuMode, MenuTheme } from 'ant-design-vue'
 import type { CSSProperties } from 'vue'
 import Footer from '@/layouts/components/Footer/index.vue'
-import ToolBarLeft from '@/layouts/components/header/ToolBarLeft.vue'
 import ToolBarRight from '@/layouts/components/header/ToolBarRight.vue'
 import Main from '@/layouts/components/Main/index.vue'
 import Menu from '@/layouts/components/Menu/index.vue'
@@ -58,12 +57,11 @@ const footerStyle: CSSProperties = {
             </a>
           </div>
           <Menu
-            class="ly-max-w-[calc(100%-256px-100px)]" :collapsed="collapsed" :menu="menuList" :theme="theme"
+            class="custom-menu ly-max-w-[calc(100%-256px-100px)]" :collapsed="collapsed" :menu="menuList" :theme="theme"
             :mode="mode"
           />
         </div>
         <div ly-flex ly-items-center>
-          <ToolBarLeft is-hide-collapse />
           <ToolBarRight ly-flex-shrink-0 @refresh="onRefresh" />
         </div>
       </div>
@@ -84,4 +82,11 @@ const footerStyle: CSSProperties = {
   </a-layout>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.custom-menu {
+  ::v-deep(.ant-menu-item) {
+    display: flex;
+    align-items: center;
+  }
+}
+</style>

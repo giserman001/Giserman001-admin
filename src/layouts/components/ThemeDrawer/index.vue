@@ -74,9 +74,9 @@ onMounted(() => {
               ly-p="8px" ly-rounded="6px" ly-relative ly-box-border ly-flex ly-flex-col ly-cursor-pointer
               ly-transition="all duration-[0.2s]" @click="setLayout('classic')"
             >
-              <div ly-bg="#409EFF" ly-rounded="3px" ly-h="14px" />
+              <div ly-bg="#a0cfff" ly-rounded="3px" ly-h="14px" />
               <div ly-flex ly-flex-1 ly-gap="[4px]">
-                <div ly-bg="#a0cfff" ly-rounded="3px" ly-w="15px" />
+                <div ly-bg="#409EFF" ly-rounded="3px" ly-w="15px" />
                 <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
               </div>
               <CheckCircleOutlined
@@ -139,6 +139,27 @@ onMounted(() => {
               <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
               <CheckCircleOutlined
                 v-if="state.layout === 'columns'" ly-absolute ly-text="#409EFF"
+                ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px"
+              />
+            </div>
+          </a-tooltip>
+          <a-tooltip placement="top">
+            <template #title>
+              <span>混合布局</span>
+            </template>
+            <div
+              ly-gap="[4px]" ly-w="110px" ly-h="80px"
+              :class="[state.layout === 'mixture' ? 'ly-shadow-[0_0_0_2px_#409EFF]' : 'ly-shadow-[0_0_5px_1px_#d4d7de] hover:ly-shadow-[0_0_5px_1px_#909399]']"
+              ly-p="8px" ly-rounded="6px" ly-relative ly-box-border ly-flex ly-flex-col ly-cursor-pointer
+              ly-transition="all duration-[0.2s]" @click="setLayout('mixture')"
+            >
+              <div ly-bg="#409EFF" ly-rounded="3px" ly-h="14px" />
+              <div ly-flex ly-flex-1 ly-gap="[4px]">
+                <div ly-bg="#409EFF" ly-rounded="3px" ly-w="15px" />
+                <div ly-border="1px dashed #409EFF" ly-flex-1 ly-rounded="3px" ly-bg="#d9ecff" />
+              </div>
+              <CheckCircleOutlined
+                v-if="state.layout === 'mixture'" ly-absolute ly-text="#409EFF"
                 ly-transition="all duration-[0.2s]" ly-right="15px" ly-bottom="15px"
               />
             </div>
