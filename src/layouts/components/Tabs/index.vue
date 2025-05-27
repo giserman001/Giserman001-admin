@@ -98,12 +98,32 @@ function closeAllTab() {
   router.push(HOME_URL)
 }
 
+function closeCurrentTab() {
+  if (route.meta.isAffix)
+    return
+  tabStore.removeTabs(route.fullPath)
+}
+
 function clickItem({ key }) {
-  if (key === 'refresh') {
-    onRefresh()
-  }
-  else {
-    closeAllTab()
+  switch (key) {
+    case 'refresh':
+      onRefresh()
+      break
+    case 'close':
+      closeAllTab()
+      break
+    case 'left':
+      tabStore.closeTabsOnSide(route.fullPath, 'left')
+      break
+    case 'right':
+      tabStore.closeTabsOnSide(route.fullPath, 'right')
+      break
+    case 'other':
+      tabStore.closeMultipleTab(route.fullPath)
+      break
+    default: // current
+      closeCurrentTab()
+      break
   }
 }
 
@@ -142,6 +162,18 @@ onMounted(() => {
                 </a-menu-item>
                 <a-menu-item key="close">
                   关闭所有
+                </a-menu-item>
+                <a-menu-item key="current">
+                  关闭当前
+                </a-menu-item>
+                <a-menu-item key="left">
+                  关闭左侧
+                </a-menu-item>
+                <a-menu-item key="right">
+                  关闭右侧
+                </a-menu-item>
+                <a-menu-item key="other">
+                  关闭其他
                 </a-menu-item>
               </a-menu>
             </template>

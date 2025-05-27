@@ -1,7 +1,6 @@
 <script setup lang="ts" name="about">
 const { pkg, lastBuildTime } = __APP_INFO__
 const { dependencies, devDependencies, version } = pkg
-console.log(dependencies, devDependencies, version)
 </script>
 
 <template>
