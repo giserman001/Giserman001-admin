@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker/locale/zh_CN'
 import { defineFakeRoute } from 'vite-plugin-fake-server/client'
-import { createPageResponse, createResponse } from './utils/index'
+import { createPageResponse, createResponse, getPagesItems } from './utils/index'
 
 export default defineFakeRoute([
   // 用户管理
@@ -8,55 +8,29 @@ export default defineFakeRoute([
     url: '/user/list',
     method: 'post',
     response: ({ body }) => {
-      let list = [
-        {
-          username: '李梅',
-          nickname: '李梅',
-          avatar: 'https://avatars.githubusercontent.com/u/44761321',
-          phone: '15888886789',
-          email: faker.internet.email(),
-          sex: 0,
-          id: 1,
-          status: 1,
-          role: ['admin', 'common'],
-          dept: {
-            // 部门id
-            id: 103,
-            // 部门名称
-            name: '研发部门',
-          },
-          remark: '管理员',
-          createTime: '2025年5月26日15:36:17',
-          updateTime: '2025年5月26日15:36:17',
+      const { current, pageSize } = body
+      const pages = Array.from({ length: 200 }, () => ({
+        username: faker.person.fullName(),
+        nickname: faker.person.firstName(),
+        avatar: faker.image.avatar(),
+        phone: faker.phone.number({ style: 'international' }),
+        email: faker.internet.email(),
+        sex: faker.person.sex(),
+        id: faker.string.uuid(),
+        status: faker.number.int({ min: 0, max: 1 }),
+        role: Array.from(new Set(Array.from(
+          { length: faker.number.int({ min: 1, max: 4 }) },
+          () => faker.helpers.arrayElement(['admin', 'common', 'test']),
+        ))),
+        dept: { // 部门
+          id: faker.string.uuid(),
+          name: faker.company.name(),
         },
-        {
-          username: '韩梅梅',
-          nickname: '韩梅梅',
-          avatar: 'https://avatars.githubusercontent.com/u/52823142',
-          phone: '18288882345',
-          email: faker.internet.email(),
-          sex: 1,
-          id: 2,
-          status: 1,
-          role: ['common'],
-          dept: {
-            id: 105,
-            name: '测试部门',
-          },
-          remark: '普通用户',
-          createTime: '2025年5月26日15:36:17',
-          updateTime: '2025年5月26日15:36:17',
-        },
-      ]
-      if (body.username)
-        list = list.filter(item => item.username === body.username)
-
-      return createPageResponse({
-        list,
-        total: list.length, // 总条目数
-        pageSize: 10, // 每页显示条目个数
-        pageNum: 1, // 当前页数
-      })
+        remark: faker.lorem.paragraph(),
+        createTime: faker.date.anytime(),
+        updateTime: faker.date.anytime(),
+      }))
+      return createPageResponse(getPagesItems(pages, current, pageSize))
     },
   },
   // 用户管理-获取所有角色列表

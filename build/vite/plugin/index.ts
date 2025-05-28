@@ -18,7 +18,7 @@ import { configUnpluginPlugin } from './unplugin'
 
 const lifecycle = process.env.npm_lifecycle_event
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
-  const { VITE_USE_IMAGEMIN, VITE_BUILD_COMPRESS, VITE_PROXY, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE, VITE_USE_MOCK } = viteEnv
+  const { VITE_USE_IMAGEMIN, VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE, VITE_USE_MOCK } = viteEnv
 
   const vitePlugins: (PluginOption | PluginOption[])[] = [
     Vue(),
@@ -37,7 +37,7 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
       include: 'mock',
       exclude: ['mock/utils/**/*.ts'],
       infixName: false,
-      enableProd: true,
+      enableProd: VITE_USE_MOCK,
     }),
     Unocss(),
   ]

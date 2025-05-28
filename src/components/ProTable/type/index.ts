@@ -80,5 +80,6 @@ export namespace Table {
     icon?: {
       [key: string]: any
     }
+    loading: boolean
   }
 }

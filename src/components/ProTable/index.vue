@@ -1,8 +1,9 @@
 <script setup lang="ts" name="ProTable" generic="T extends Record<string, any>, U extends ColumnProps">
-import type { TablePaginationConfig, TableProps } from 'ant-design-vue'
+import type { Table, TablePaginationConfig, TableProps } from 'ant-design-vue'
 import type { ColumnProps } from './type/index'
 import type { BreakPoint } from '@/components/Grid/interface'
 import { SearchOutlined, SettingFilled, SyncOutlined } from '@ant-design/icons-vue'
+
 import { cloneDeep } from 'lodash-es'
 import { h } from 'vue'
 import ColSetting from './components/ColSetting.vue'
@@ -21,6 +22,7 @@ interface ProTableProps {
   rowKey?: ((record: T, index?: number) => any) | string
   toolButton?: ('refresh' | 'setting' | 'search')[] | boolean // 是否显示表格功能按钮 ==> 非必传（默认为true）
   pageable?: TablePaginationConfig | false
+  loadingable?: boolean
   searchCol?: number | Record<BreakPoint, number> // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
 }
 
@@ -30,7 +32,20 @@ interface TableChangeParams {
   sorter: any
 }
 
-const { dataSource = [], columns, rowKey = 'id', toolButton, pageable, searchCol = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }, requestApi, initParam = {}, dataCallback, requestError, requestAuto = true } = defineProps<ProTableProps>()
+const {
+  dataSource = [],
+  columns,
+  rowKey = 'id',
+  toolButton,
+  pageable,
+  searchCol = { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 },
+  requestApi,
+  initParam = {},
+  dataCallback,
+  requestError,
+  requestAuto = true,
+  loadingable = true,
+} = defineProps<ProTableProps>()
 
 const emit = defineEmits<{
   (e: 'refresh'): void
@@ -39,9 +54,11 @@ const emit = defineEmits<{
   (e: 'change', data: TableChangeParams): void
 }>()
 
+const tableRef = useTemplateRef<InstanceType<typeof Table>>('tableRef')
+
 // 表格操作 Hooks
-const { tableData, pagination, searchParam, searchInitParam, getTableList, search, reset, handlePageChange }
-  = useTable(requestApi, initParam, pageable, dataCallback, requestError)
+const { tableData, pagination, searchParam, searchInitParam, loading, getTableList, search, reset, handlePageChange }
+  = useTable(requestApi, initParam, pageable, dataCallback, requestError, loadingable)
 
 // 扁平化 columns 的方法
 function flatColumnsFunc(columns: ColumnProps[]) {
@@ -151,6 +168,11 @@ function _reset() {
   emit('reset')
 }
 
+function refresh() {
+  getTableList()
+  emit('refresh')
+}
+
 // 分页、排序、筛选变化时触发
 const handleTableChange: TableProps['onChange'] = (
   pag: { pageSize: number, current: number },
@@ -176,6 +198,18 @@ const processTableData = computed(() => {
 onMounted(() => {
   requestAuto && getTableList()
 })
+
+// 暴露给父组件的参数和方法 (外部需要什么，都可以从这里暴露出去)
+defineExpose({
+  element: tableRef,
+  tableData: processTableData,
+  searchParam,
+  searchInitParam,
+  // 下面为 function
+  getTableList,
+  search,
+  reset,
+})
 </script>
 
 <template>
@@ -199,7 +233,7 @@ onMounted(() => {
           <slot v-if="$slots.tableHeader" name="tableHeader" />
         </div>
         <div ly-gap="10px" ly-flex ly-flex-shrink-0 ly-items-center>
-          <a-button v-if="showToolButton('refresh')" shape="circle" :icon="h(SyncOutlined)" @click="emit('refresh')" />
+          <a-button v-if="showToolButton('refresh')" shape="circle" :icon="h(SyncOutlined)" @click="refresh" />
           <a-button v-if="showToolButton('setting')" shape="circle" :icon="h(SettingFilled)" @click="openColSetting" />
           <a-button
             v-if="showToolButton('search') && searchColumns?.length" shape="circle" :icon="h(SearchOutlined)"
@@ -208,8 +242,8 @@ onMounted(() => {
         </div>
       </div>
       <a-table
-        :data-source="processTableData" :columns="renderColumns" :row-key="rowKey" :pagination="pagination" bordered
-        size="small" v-bind="$attrs" @change="handleTableChange"
+        ref="tableRef" :data-source="processTableData" :columns="renderColumns" :row-key="rowKey"
+        :pagination="pagination" bordered :loading="loading" size="small" v-bind="$attrs" @change="handleTableChange"
       >
         <!-- 头部插槽 -->
         <template v-if="headSlots?.length" #headerCell="{ title, column }">

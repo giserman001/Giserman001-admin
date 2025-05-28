@@ -1,25 +1,16 @@
 <script setup lang="ts" name="accountManage">
 import type { ColumnProps } from '@/components/ProTable/type/index'
+import { DeleteOutlined, ExclamationCircleOutlined, UsergroupAddOutlined } from '@ant-design/icons-vue'
+import { Modal } from 'ant-design-vue'
+import { createVNode } from 'vue'
 import { getUserList } from '@/api/modules/user'
 
-// interface Role {
-//   id: number
-//   username: string
-//   nickname: string
-//   avatar: string
-//   phone: string
-//   sex: number
-//   email: string
-//   role: string[]
-//   status: number
-//   dept: {
-//     id: number
-//     name: string
-//   }
-//   remark: string
-//   updateTime: string
-//   createTime: string
-// }
+type Key = string | number
+const state = reactive<{
+  selectedRowKeys: Key[]
+}>({
+  selectedRowKeys: [], // Check here to configure the default column
+})
 
 const columns: ColumnProps[] = [
   {
@@ -81,10 +72,46 @@ const pagination = ref({
 async function getUserListFn(params: any) {
   return await getUserList(params)
 }
+
+function onSelectChange(selectedRowKeys: Key[]) {
+  console.log('selectedRowKeys changed: ', selectedRowKeys)
+  state.selectedRowKeys = selectedRowKeys
+}
+
+function handleAdd() {}
+function handleDel() {
+  Modal.confirm({
+    title: '确认',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: '确认删除用户?',
+    okText: '确认',
+    cancelText: '取消',
+    onOk() {
+      return new Promise((resolve, reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
+      }).catch(() => console.log('errors!'))
+    },
+    onCancel() {},
+  })
+}
 </script>
 
 <template>
-  <ProTable :request-api="getUserListFn" :columns="columns" :pageable="pagination" :tool-button="['refresh', 'search', 'setting']">
+  <ProTable
+    :request-api="getUserListFn" :columns="columns" :pageable="pagination"
+    :tool-button="['refresh', 'search', 'setting']"
+    :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }"
+  >
+    <template #tableHeader>
+      <a-button type="primary" @click="handleAdd">
+        <UsergroupAddOutlined />
+        新增用户
+      </a-button>
+      <a-button type="primary" :disabled="!state.selectedRowKeys.length" @click="handleDel">
+        <template #icon><DeleteOutlined /></template>
+        删除用户
+      </a-button>
+    </template>
     <template #avatar-body="scope">
       <a-avatar :src="scope.record.avatar" />
     </template>
@@ -95,11 +122,11 @@ async function getUserListFn(params: any) {
       {{ scope.record.sex === 1 ? '男' : '女' }}
     </template>
     <template #operation-body>
-      <span>
-        <a>删除</a>
+      <div>
+        <a @click="handleDel">删除</a>
         <a-divider type="vertical" />
-        <a class="ant-dropdown-link">更多操作</a>
-      </span>
+        <a class="ant-dropdown-link">详情</a>
+      </div>
     </template>
   </ProTable>
 </template>

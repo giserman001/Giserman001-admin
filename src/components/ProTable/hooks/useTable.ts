@@ -9,7 +9,7 @@ import { computed, reactive, toRefs } from 'vue'
  * @param {boolean} isParable 是否有分页
  * @param {Function} dataCallBack 对后台返回的数据进行处理的方法 (非必传)
  */
-export function useTable(api?: (params: any) => Promise<any>, initParam: object = {}, isParable?: (TablePaginationConfig | false), dataCallBack?: (data: any) => any, requestError?: (error: any) => void) {
+export function useTable(api?: (params: any) => Promise<any>, initParam: object = {}, isParable?: (TablePaginationConfig | false), dataCallBack?: (data: any) => any, requestError?: (error: any) => void, loadingable?: boolean) {
   const state = reactive<Table.StateProps>({
     // 表格数据
     tableData: [],
@@ -21,6 +21,7 @@ export function useTable(api?: (params: any) => Promise<any>, initParam: object 
     searchInitParam: {},
     // 总参数(包含分页和查询参数)
     totalParam: {},
+    loading: false,
   })
 
   /**
@@ -48,7 +49,9 @@ export function useTable(api?: (params: any) => Promise<any>, initParam: object 
     try {
       // 先把初始化参数和分页参数放到总参数里面
       Object.assign(state.totalParam, initParam, isParable !== false ? state.pagination : {})
+      loadingable && (state.loading = true)
       const { data } = await api({ ...state.searchInitParam, ...state.totalParam })
+      loadingable && (state.loading = false)
       state.tableData = isParable !== false ? data.list : data
       // 解构后台返回的分页数据 (如果有分页更新分页信息)
       if (state.pagination !== false) {
