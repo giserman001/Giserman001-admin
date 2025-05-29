@@ -26,12 +26,6 @@ interface ProTableProps {
   searchCol?: number | Record<BreakPoint, number> // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
 }
 
-interface TableChangeParams {
-  pag: { pageSize: number, current: number }
-  filters: any
-  sorter: any
-}
-
 const {
   dataSource = [],
   columns,
@@ -53,6 +47,14 @@ const emit = defineEmits<{
   (e: 'reset'): void
   (e: 'change', data: TableChangeParams): void
 }>()
+
+const tableKey = useId()
+
+interface TableChangeParams {
+  pag: { pageSize: number, current: number }
+  filters: any
+  sorter: any
+}
 
 const tableRef = useTemplateRef<InstanceType<typeof Table>>('tableRef')
 
@@ -242,7 +244,7 @@ defineExpose({
         </div>
       </div>
       <a-table
-        ref="tableRef" :data-source="processTableData" :columns="renderColumns" :row-key="rowKey"
+        ref="tableRef" :key="tableKey" :data-source="processTableData" :columns="renderColumns" :row-key="rowKey"
         :pagination="pagination" bordered :loading="loading" size="small" v-bind="$attrs" @change="handleTableChange"
       >
         <!-- 头部插槽 -->
