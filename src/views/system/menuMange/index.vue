@@ -1,40 +1,125 @@
 <script setup lang="ts" name="menuMange">
-// import { ColumnProps } from "@/components/ProTable/interface";
-// import { Delete, EditPen, CirclePlus } from "@element-plus/icons-vue";
-// import authMenuList from "@/assets/json/authMenuList.json";
-// import ProTable from "@/components/ProTable/index.vue";
+import type { ColumnProps } from '@/components/ProTable/type/index'
+import { ExclamationCircleOutlined, UsergroupAddOutlined } from '@ant-design/icons-vue'
+import { Modal } from 'ant-design-vue'
+import { createVNode } from 'vue'
+import { getAuthMenuListApi } from '@/api/modules/login'
 
-// const proTable = ref();
+const columns: ColumnProps[] = [
+  {
+    title: '菜单名称',
+    dataIndex: ['meta', 'title'],
+  },
+  {
+    title: '路由名称',
+    dataIndex: 'name',
+  },
+  {
+    title: '路由路径',
+    dataIndex: 'path',
+  },
+  {
+    title: '组件路径',
+    dataIndex: 'component',
+  },
+  {
+    title: '是否全屏',
+    dataIndex: 'isFull',
+  },
+  {
+    title: '是否缓存',
+    dataIndex: 'isKeepAlive',
+  },
+  // {
+  //   title: '创建时间',
+  //   dataIndex: 'createTime',
+  //   search: {
+  //     el: 'date-picker',
+  //     props: {
+  //       dateFormat: 'YYYY-MM-DD',
+  //     },
+  //     events: {
+  //       change: (date: [Dayjs, Dayjs], dateString: [string, string]) => {
+  //         console.log('时间变化=>', dateString, date)
+  //       },
+  //     },
+  //   },
+  // },
+  // {
+  //   title: '修改时间',
+  //   dataIndex: 'updateTime',
+  // },
+  {
+    title: '图标',
+    dataIndex: ['meta', 'icon'],
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    width: 180,
+  },
+]
 
-// const menuData = ref(authMenuList.data);
+function filterMenuItems(menu: Menu.MenuOptions[]): Menu.MenuOptions[] {
+  return menu.filter(item => !item.meta.isHide).map((item) => {
+    const children = item.children ? filterMenuItems(item.children) : undefined
+    if (children && children.length === 0) {
+      return { ...item, children: undefined }
+    }
+    return { ...item, children }
+  })
+}
 
-// 表格配置项
-// const columns: ColumnProps[] = [
-//   { prop: "meta.title", label: "菜单名称", align: "left", search: { el: "input" } },
-//   { prop: "meta.icon", label: "菜单图标" },
-//   { prop: "name", label: "菜单 name", search: { el: "input" } },
-//   { prop: "path", label: "菜单路径", width: 300, search: { el: "input" } },
-//   { prop: "component", label: "组件路径", width: 300 },
-//   { prop: "operation", label: "操作", width: 250, fixed: "right" }
-// ];
+async function getUserListFn() {
+  const res = await getAuthMenuListApi()
+  res.data = filterMenuItems(res.data)
+  return res
+}
+
+function handleAdd() {}
+function handleDel() {
+  Modal.confirm({
+    title: '确认',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: '确认删除菜单?',
+    okText: '确认',
+    cancelText: '取消',
+    onOk() {
+      return new Promise((resolve, reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
+      }).catch(() => console.log('errors!'))
+    },
+    onCancel() {},
+  })
+}
 </script>
 
 <template>
-  <div class="table-box">
-    <!-- <ProTable ref="proTable" title="菜单列表" row-key="path" :indent="20" :columns="columns" :data="menuData">
-      <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus">新增菜单 </el-button>
-      </template>
-      <template #icon="scope">
-        <el-icon :size="18">
-          <component :is="scope.row.meta.icon"></component>
-        </el-icon>
-      </template>
-      <template #operation>
-        <el-button type="primary" link :icon="EditPen"> 编辑 </el-button>
-        <el-button type="primary" link :icon="Delete"> 删除 </el-button>
-      </template>
-    </ProTable> -->
-    <span class="text"> 菜单管理（待完善） 🍓🍇🍈🍉</span>
-  </div>
+  <ProTable
+    :request-api="getUserListFn" :columns="columns" :pageable="false"
+    :tool-button="['refresh', 'search', 'setting']"
+    row-key="name"
+  >
+    <template #tableHeader>
+      <a-button type="primary" @click="handleAdd">
+        <UsergroupAddOutlined />
+        新增菜单
+      </a-button>
+    </template>
+    <template #isFull-body="scope">
+      {{ scope.record.meta.isFull ? '是' : '否' }}
+    </template>
+    <template #isKeepAlive-body="scope">
+      {{ scope.record.meta.isKeepAlive ? '是' : '否' }}
+    </template>
+    <template #operation-body>
+      <div>
+        <a @click="handleDel">编辑</a>
+        <a-divider type="vertical" />
+        <a @click="handleDel">删除</a>
+        <a-divider type="vertical" />
+        <a>设置权限</a>
+      </div>
+    </template>
+  </ProTable>
 </template>

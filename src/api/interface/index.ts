@@ -49,9 +49,7 @@ export namespace User {
   export interface ReqUserParams extends ReqPage {
     username: string
     gender: number
-    idCard: string
     email: string
-    address: string
     createTime: string[]
     status: number
   }
@@ -86,5 +84,21 @@ export namespace User {
     id: string
     name: string
     children?: ResDepartment[]
+  }
+}
+
+// 用户管理模块
+export namespace Role {
+  export interface ReqRoleParams extends ReqPage {
+    rolename: string
+    createTime: string
+  }
+  export interface ResUserList {
+    id: number
+    rolename: string
+    status: 0 | 1
+    remark: string
+    createTime: string
+    updateTime: string
   }
 }

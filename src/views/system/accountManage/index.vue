@@ -1,7 +1,9 @@
 <script setup lang="ts" name="accountManage">
+import type { Dayjs } from 'dayjs'
 import type { ColumnProps } from '@/components/ProTable/type/index'
 import { DeleteOutlined, ExclamationCircleOutlined, UsergroupAddOutlined } from '@ant-design/icons-vue'
 import { Modal } from 'ant-design-vue'
+import dayjs from 'dayjs'
 import { createVNode } from 'vue'
 import { getUserList } from '@/api/modules/user'
 
@@ -11,6 +13,8 @@ const state = reactive<{
 }>({
   selectedRowKeys: [], // Check here to configure the default column
 })
+
+const defaultTime = ref<Dayjs>(dayjs('2015-06-06', 'YYYY-MM-DD'))
 
 const columns: ColumnProps[] = [
   {
@@ -33,6 +37,13 @@ const columns: ColumnProps[] = [
   {
     title: '性别',
     dataIndex: 'sex',
+    search: {
+      el: 'select',
+      options: [
+        { label: '男', value: 1 },
+        { label: '女', value: 2 },
+      ],
+    },
   },
   {
     title: '邮箱',
@@ -52,6 +63,18 @@ const columns: ColumnProps[] = [
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    search: {
+      el: 'date-picker',
+      defaultValue: defaultTime.value,
+      props: {
+        dateFormat: 'YYYY-MM-DD',
+      },
+      events: {
+        change: (date: [Dayjs, Dayjs], dateString: [string, string]) => {
+          console.log('时间变化=>', dateString, date)
+        },
+      },
+    },
   },
   {
     title: '修改时间',

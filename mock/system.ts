@@ -15,7 +15,7 @@ export default defineFakeRoute([
         avatar: faker.image.avatar(),
         phone: faker.phone.number({ style: 'international' }),
         email: faker.internet.email(),
-        sex: faker.person.sex(),
+        sex: faker.number.int({ min: 1, max: 2 }), // 1男 2女
         id: faker.string.uuid(),
         status: faker.number.int({ min: 0, max: 1 }),
         role: Array.from(new Set(Array.from(
@@ -35,13 +35,19 @@ export default defineFakeRoute([
   },
   // 用户管理-获取所有角色列表
   {
-    url: '/list-all-role',
-    method: 'get',
-    response: () => {
-      return createResponse([
-        { id: 1, name: '超级管理员' },
-        { id: 2, name: '普通角色' },
-      ])
+    url: '/role/list',
+    method: 'post',
+    response: ({ body }) => {
+      const { current, pageSize } = body
+      const pages = Array.from({ length: 50 }, () => ({
+        id: faker.string.uuid(),
+        rolename: faker.person.fullName(),
+        status: faker.number.int({ min: 0, max: 1 }),
+        remark: faker.lorem.paragraph(),
+        createTime: faker.date.anytime(),
+        updateTime: faker.date.anytime(),
+      }))
+      return createPageResponse(getPagesItems(pages, current, pageSize))
     },
   },
   // 用户管理-根据userId，获取对应角色id列表（userId：用户id）

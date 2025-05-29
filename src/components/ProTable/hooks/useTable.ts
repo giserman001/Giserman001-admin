@@ -1,6 +1,6 @@
 import type { TablePaginationConfig } from 'ant-design-vue'
 import type { Table } from '../type/index'
-import { computed, reactive, toRefs } from 'vue'
+import { reactive, toRefs } from 'vue'
 
 /**
  * @description table 页面操作方法封装
@@ -27,17 +27,17 @@ export function useTable(api?: (params: any) => Promise<any>, initParam: object 
   /**
    * @description 分页查询参数(只包括分页和表格字段排序,其他排序方式可自行配置)
    */
-  const pageParam = computed({
-    get: () => {
-      return {
-        current: (state.pagination as TablePaginationConfig).current,
-        pageSize: (state.pagination as TablePaginationConfig).pageSize,
-      }
-    },
-    set: (newVal: any) => {
-      console.log('我是分页更新之后的值', newVal)
-    },
-  })
+  // const pageParam = computed({
+  //   get: () => {
+  //     return {
+  //       current: (state.pagination as TablePaginationConfig).current,
+  //       pageSize: (state.pagination as TablePaginationConfig).pageSize,
+  //     }
+  //   },
+  //   set: (newVal: any) => {
+  //     console.log('我是分页更新之后的值', newVal)
+  //   },
+  // })
 
   /**
    * @description 获取表格数据

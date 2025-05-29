@@ -1,13 +1,15 @@
-import type { ResPage, User } from '@/api/interface/index'
+import type { ResPage, Role, User } from '@/api/interface/index'
 import http from '@/api'
 
-/**
- * @name 用户管理模块
- */
 // 获取用户列表
 
 export function getUserList(params: User.ReqUserParams) {
   return http.post<ResPage<User.ResUserList>>(`/user/list`, params)
+}
+
+// 获取用户角色列表
+export function getUserRoleList(params: Role.ReqRoleParams) {
+  return http.post<User.ResUserList[]>(`/role/list`, params)
 }
 
 // 获取树形用户列表

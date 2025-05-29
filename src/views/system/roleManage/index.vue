@@ -1,6 +1,17 @@
 <script setup lang="ts" name="roleManage">
+import type { Dayjs } from 'dayjs'
 import type { ColumnProps } from '@/components/ProTable/type/index'
-import { getUserList } from '@/api/modules/user'
+import { DeleteOutlined, ExclamationCircleOutlined, UsergroupAddOutlined } from '@ant-design/icons-vue'
+import { Modal } from 'ant-design-vue'
+import { createVNode } from 'vue'
+import { getUserRoleList } from '@/api/modules/user'
+
+type Key = string | number
+const state = reactive<{
+  selectedRowKeys: Key[]
+}>({
+  selectedRowKeys: [],
+})
 
 const columns: ColumnProps[] = [
   {
@@ -10,46 +21,46 @@ const columns: ColumnProps[] = [
     width: '6%',
   },
   {
-    title: '头像',
-    dataIndex: 'avatar',
-  },
-  {
-    title: '用户名',
-    dataIndex: 'username',
+    title: '角色名称',
+    dataIndex: 'rolename',
     search: {
       el: 'input',
     },
   },
   {
-    title: '性别',
-    dataIndex: 'sex',
-  },
-  {
-    title: '邮箱',
-    dataIndex: 'email',
-  },
-  {
-    title: '手机号',
-    dataIndex: 'phone',
-    search: {
-      el: 'input',
-    },
-  },
-  {
-    title: '角色',
-    dataIndex: 'role',
+    title: '角色状态',
+    dataIndex: 'status',
+    width: 80,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    search: {
+      el: 'date-picker',
+      props: {
+        dateFormat: 'YYYY-MM-DD',
+      },
+      events: {
+        change: (date: [Dayjs, Dayjs], dateString: [string, string]) => {
+          console.log('时间变化=>', dateString, date)
+        },
+      },
+    },
   },
   {
     title: '修改时间',
     dataIndex: 'updateTime',
   },
   {
+    title: '备注',
+    dataIndex: 'remark',
+    ellipsis: true,
+    width: '30%',
+  },
+  {
     title: '操作',
     dataIndex: 'operation',
+    width: 100,
   },
 ]
 
@@ -60,31 +71,57 @@ const pagination = ref({
 })
 
 async function getUserListFn(params: any) {
-  return await getUserList(params)
+  return await getUserRoleList(params)
 }
 
-async function handleDelete() {
+function onSelectChange(selectedRowKeys: Key[]) {
+  console.log('selectedRowKeys changed: ', selectedRowKeys)
+  state.selectedRowKeys = selectedRowKeys
+}
 
+function handleAdd() {}
+function handleDel() {
+  Modal.confirm({
+    title: '确认',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: '确认删除用户?',
+    okText: '确认',
+    cancelText: '取消',
+    onOk() {
+      return new Promise((resolve, reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
+      }).catch(() => console.log('errors!'))
+    },
+    onCancel() {},
+  })
 }
 </script>
 
 <template>
-  <ProTable :request-api="getUserListFn" :columns="columns" :pageable="pagination" :tool-button="['refresh', 'search', 'setting']">
-    <template #avatar-body="scope">
-      <a-avatar :src="scope.record.avatar" />
+  <ProTable
+    :request-api="getUserListFn" :columns="columns" :pageable="pagination"
+    :tool-button="['refresh', 'search', 'setting']"
+    :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }"
+  >
+    <template #tableHeader>
+      <a-button type="primary" @click="handleAdd">
+        <UsergroupAddOutlined />
+        新增角色
+      </a-button>
+      <a-button type="primary" :disabled="!state.selectedRowKeys.length" @click="handleDel">
+        <template #icon><DeleteOutlined /></template>
+        删除角色
+      </a-button>
     </template>
-    <template #role-body="scope">
-      <a-tag v-for="item in scope.record.role" :key="item" color="blue">{{ item }}</a-tag>
-    </template>
-    <template #sex-body="scope">
-      {{ scope.record.sex === 1 ? '男' : '女' }}
+    <template #status-body="scope">
+      <a-switch v-model:checked="scope.record.status" :checked-value="1" :un-checked-value="0" checked-children="启用" un-checked-children="关闭" />
     </template>
     <template #operation-body>
-      <span>
-        <a @click="handleDelete">删除</a>
+      <div>
+        <a @click="handleDel">删除</a>
         <a-divider type="vertical" />
-        <a class="ant-dropdown-link">更多操作</a>
-      </span>
+        <a class="ant-dropdown-link">详情</a>
+      </div>
     </template>
   </ProTable>
 </template>
