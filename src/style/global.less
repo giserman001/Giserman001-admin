@@ -47,3 +47,21 @@ body,
   transition: all 0.2s;
   transform: translateX(30px);
 }
+
+.full-modal {
+  .ant-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh);
+  }
+  .ant-modal-body {
+    flex: 1;
+  }
+}

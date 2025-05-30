@@ -16,6 +16,8 @@ const state = reactive<{
 
 const defaultTime = ref<Dayjs>(dayjs('2015-06-06', 'YYYY-MM-DD'))
 
+const userModalVisible = ref(false)
+
 const columns: ColumnProps[] = [
   {
     title: '序号',
@@ -101,7 +103,9 @@ function onSelectChange(selectedRowKeys: Key[]) {
   state.selectedRowKeys = selectedRowKeys
 }
 
-function handleAdd() {}
+function handleAdd() {
+  userModalVisible.value = true
+}
 function handleDel() {
   Modal.confirm({
     title: '确认',
@@ -114,42 +118,51 @@ function handleDel() {
         setTimeout(Math.random() > 0.5 ? resolve : reject, 1000)
       }).catch(() => console.log('errors!'))
     },
-    onCancel() {},
+    onCancel() { },
   })
 }
 </script>
 
 <template>
-  <ProTable
-    :request-api="getUserListFn" :columns="columns" :pageable="pagination"
-    :tool-button="['refresh', 'search', 'setting']"
-    :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }"
-  >
-    <template #tableHeader>
-      <a-button type="primary" @click="handleAdd">
-        <UsergroupAddOutlined />
-        新增用户
-      </a-button>
-      <a-button type="primary" :disabled="!state.selectedRowKeys.length" @click="handleDel">
-        <template #icon><DeleteOutlined /></template>
-        删除用户
-      </a-button>
-    </template>
-    <template #avatar-body="scope">
-      <a-avatar :src="scope.record.avatar" />
-    </template>
-    <template #role-body="scope">
-      <a-tag v-for="item in scope.record.role" :key="item" color="blue">{{ item }}</a-tag>
-    </template>
-    <template #sex-body="scope">
-      {{ scope.record.sex === 1 ? '男' : '女' }}
-    </template>
-    <template #operation-body>
-      <div>
-        <a @click="handleDel">删除</a>
-        <a-divider type="vertical" />
-        <a class="ant-dropdown-link">详情</a>
-      </div>
-    </template>
-  </ProTable>
+  <div>
+    <ProTable
+      :request-api="getUserListFn" :columns="columns" :pageable="pagination"
+      :tool-button="['refresh', 'search', 'setting']"
+      :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }"
+    >
+      <template #tableHeader>
+        <a-button type="primary" @click="handleAdd">
+          <UsergroupAddOutlined />
+          新增用户
+        </a-button>
+        <a-button type="primary" :disabled="!state.selectedRowKeys.length" @click="handleDel">
+          <template #icon>
+            <DeleteOutlined />
+          </template>
+          删除用户
+        </a-button>
+      </template>
+      <template #avatar-body="scope">
+        <a-avatar :src="scope.record.avatar" />
+      </template>
+      <template #role-body="scope">
+        <a-tag v-for="item in scope.record.role" :key="item" color="blue">{{ item }}</a-tag>
+      </template>
+      <template #sex-body="scope">
+        {{ scope.record.sex === 1 ? '男' : '女' }}
+      </template>
+      <template #operation-body>
+        <div>
+          <a @click="handleDel">删除</a>
+          <a-divider type="vertical" />
+          <a class="ant-dropdown-link">详情</a>
+        </div>
+      </template>
+    </ProTable>
+    <ProModal v-model:open="userModalVisible">
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </ProModal>
+  </div>
 </template>
