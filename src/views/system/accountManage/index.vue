@@ -1,5 +1,7 @@
 <script setup lang="ts" name="accountManage">
+import type { TreeSelectProps } from 'ant-design-vue'
 import type { Dayjs } from 'dayjs'
+import type { UnwrapRef } from 'vue'
 import type { ColumnProps } from '@/components/ProTable/type/index'
 import { DeleteOutlined, ExclamationCircleOutlined, UsergroupAddOutlined } from '@ant-design/icons-vue'
 import { Modal } from 'ant-design-vue'
@@ -121,6 +123,62 @@ function handleDel() {
     onCancel() { },
   })
 }
+
+interface FormState {
+  name: string
+  delivery: boolean
+  type: string[]
+  resource: string
+  desc: string
+}
+const formState: UnwrapRef<FormState> = reactive({
+  name: '',
+  delivery: false,
+  type: [],
+  resource: '',
+  desc: '',
+})
+const treeData = ref<TreeSelectProps['treeData']>([
+  {
+    label: 'root 1',
+    value: 'root 1',
+    children: [
+      {
+        label: 'parent 1',
+        value: 'parent 1',
+        children: [
+          {
+            label: 'parent 1-0',
+            value: 'parent 1-0',
+            children: [
+              {
+                label: 'my leaf',
+                value: 'leaf1',
+              },
+              {
+                label: 'your leaf',
+                value: 'leaf2',
+              },
+            ],
+          },
+          {
+            label: 'parent 1-1',
+            value: 'parent 1-1',
+          },
+        ],
+      },
+      {
+        label: 'parent 2',
+        value: 'parent 2',
+      },
+    ],
+  },
+])
+function handleOk() {
+  console.log('submit!', toRaw(formState))
+  userModalVisible.value = false
+}
+const labelCol = { style: { width: '60px' } }
 </script>
 
 <template>
@@ -153,16 +211,66 @@ function handleDel() {
       </template>
       <template #operation-body>
         <div>
+          <a @click="handleAdd">编辑</a>
+          <a-divider type="vertical" />
           <a @click="handleDel">删除</a>
           <a-divider type="vertical" />
           <a class="ant-dropdown-link">详情</a>
         </div>
       </template>
     </ProTable>
-    <ProModal v-model:open="userModalVisible">
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+    <ProModal v-model:open="userModalVisible" name="新增用户" @ok="handleOk">
+      <a-form :model="formState" :label-col="labelCol">
+        <a-row>
+          <a-col :span="12">
+            <a-form-item label="用户名">
+              <a-input v-model:value="formState.name" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="邮箱">
+              <a-input v-model:value="formState.name" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-item label="手机号">
+              <a-input v-model:value="formState.name" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="性别">
+              <a-radio-group v-model:value="formState.resource">
+                <a-radio value="1">男</a-radio>
+                <a-radio value="2">女</a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-item label="所属部门">
+              <a-tree-select
+                v-model:value="formState.name"
+                show-search
+                style="width: 100%"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                placeholder="请选择部门"
+                allow-clear
+                tree-default-expand-all
+                :tree-data="treeData"
+                tree-node-filter-prop="label"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="状态">
+              <a-switch v-model:checked="formState.delivery" :checked-value="1" :un-checked-value="0" checked-children="启用" un-checked-children="禁用" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
     </ProModal>
   </div>
 </template>

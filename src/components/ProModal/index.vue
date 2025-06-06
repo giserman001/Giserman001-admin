@@ -2,11 +2,11 @@
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import vDragModal from './dragModal'
 
+const { name = '标题' } = defineProps<{ name?: string }>()
+
 const open = defineModel<boolean>('open', { required: true })
 
 const isFull = ref(false)
-
-function handleOk() { }
 function handleFull() {
   isFull.value = !isFull.value
 }
@@ -21,9 +21,9 @@ watch(open, (val) => {
 
 <template>
   <div>
-    <a-modal v-model:open="open" :wrap-class-name="isFull ? 'full-modal' : ''" title="属性title" v-bind="$attrs" @ok="handleOk">
+    <a-modal v-model:open="open" :wrap-class-name="isFull ? 'full-modal' : ''" v-bind="$attrs">
       <template #title>
-        <div v-drag-modal>插槽title</div>
+        <div v-drag-modal>{{ name }}</div>
       </template>
       <template v-for="(_, keys) in $slots" #[keys]>
         <div v-if="keys === 'default'" :key="keys" ly-absolute ly-top="[17px]" ly-right="[44px]" ly-cursor-pointer>

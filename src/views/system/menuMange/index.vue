@@ -117,8 +117,6 @@ function handleDel() {
         <a @click="handleDel">编辑</a>
         <a-divider type="vertical" />
         <a @click="handleDel">删除</a>
-        <a-divider type="vertical" />
-        <a>设置权限</a>
       </div>
     </template>
   </ProTable>

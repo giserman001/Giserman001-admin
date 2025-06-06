@@ -58,7 +58,7 @@ export default {
           // 移动当前元素
           dragDom.style.cssText += `;left:${left + styL}px;top:${top + styT}px;`
         }
-        document.onmouseup = function (e: any) {
+        document.onmouseup = function () {
           document.onmousemove = null
           document.onmouseup = null
         }

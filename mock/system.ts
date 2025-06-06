@@ -42,6 +42,7 @@ export default defineFakeRoute([
       const pages = Array.from({ length: 50 }, () => ({
         id: faker.string.uuid(),
         rolename: faker.person.fullName(),
+        roleTag: faker.helpers.arrayElement(['admin', 'common', 'test']),
         status: faker.number.int({ min: 0, max: 1 }),
         remark: faker.lorem.paragraph(),
         createTime: faker.date.anytime(),
