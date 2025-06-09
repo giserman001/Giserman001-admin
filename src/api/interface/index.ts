@@ -67,24 +67,6 @@ export namespace User {
     photo: any[]
     children?: ResUserList[]
   }
-  export interface ResStatus {
-    userLabel: string
-    userValue: number
-  }
-  export interface ResGender {
-    genderLabel: string
-    genderValue: number
-  }
-  export interface ResDepartment {
-    id: string
-    name: string
-    children?: ResDepartment[]
-  }
-  export interface ResRole {
-    id: string
-    name: string
-    children?: ResDepartment[]
-  }
 }
 
 // 用户管理模块
@@ -100,5 +82,25 @@ export namespace Role {
     remark: string
     createTime: string
     updateTime: string
+  }
+}
+
+// 部门管理模块
+export namespace Dept {
+  export interface ReqDeptParams extends ReqPage {
+    name: string
+  }
+  export interface ResDeptList {
+    name: string
+    parentId: number
+    id: number
+    sort: number
+    phone: string
+    principal: string
+    email: string
+    status: number // 状态 1 启用 0 停用
+    type: number // 1 公司 2 分公司 3 部门
+    createTime: string
+    remark: string
   }
 }
